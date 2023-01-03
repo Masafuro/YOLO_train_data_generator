@@ -83,11 +83,16 @@ def yolo_format_bbox(image, bbox):
 
 output_path = "./output"
 print("output_path:" + output_path + ":EXIST:" + str(os.path.exists(output_path)) )
-fruit_files = glob.glob("export/*")
+input_path = "orig_images"
+input_glob = input_path + "/*"
+# fruit_files = glob.glob( input_glob )
+fruit_files = glob.glob( "orig_images/*" )
+print("fruit_files:", fruit_files)
 fruits = []
 labels = []
 for fruit_file in fruit_files:
-    labels.append(fruit_file.split("/")[-1].split(".")[0].lstrip("export\\"))
+#    labels.append(fruit_file.split("/")[-1].split(".")[0].lstrip(input_path + "\\"))
+    labels.append(fruit_file.split("/")[-1].split(".")[0].lstrip( "orig_images\\"))
     fruits.append(cv2.imread(fruit_file, cv2.IMREAD_UNCHANGED))
 background_image = cv2.imread("background.jpg")
 print("labels[]:", labels)
