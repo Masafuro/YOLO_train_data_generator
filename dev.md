@@ -17,8 +17,8 @@ YOLO_train_data_generatorの動作を確認する。
 ___
 
 # memo
-[pythonで引数指定](https://qiita.com/stkdev/items/e262dada7b68ea91aa0c)
-[pythonでフォルダ内画像の一括処理](https://zenn.dev/k_neko3/articles/8b89b0ab1c29f8)
-[pythonによるグリーンバック透過](https://teratail.com/questions/355396?link=qa_related_sp)
+- [pythonで引数指定](https://qiita.com/stkdev/items/e262dada7b68ea91aa0c)
+- [pythonでフォルダ内画像の一括処理](https://zenn.dev/k_neko3/articles/8b89b0ab1c29f8)
+- [pythonによるグリーンバック透過](https://teratail.com/questions/355396?link=qa_related_sp)
 
 
