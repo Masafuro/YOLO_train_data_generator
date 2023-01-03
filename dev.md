@@ -20,7 +20,13 @@ YOLO_train_data_generatorの動作を確認する。
 ### グリーンバック透過
 cv2のインストール
 - [openSSLエラー対策 DL v1.1.1s light](https://qiita.com/SatoshiGachiFujimoto/items/6362de71b8756d8341e7)
+
+cv2のインストール
 > conda install -c conda-forge opencv
+
+DLL Load failed
+https://qiita.com/nn_tok/items/e3a6b244e29c5a0510b0
+
 
 pathlib : python >= 3.4
 
