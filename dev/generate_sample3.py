@@ -8,6 +8,7 @@ import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument("--loop")
 args = parser.parse_args()
+skip_pad = False
 
 # src_imageの背景画像に対して、overlay_imageのalpha画像を貼り付ける。pos_xとpos_yは貼り付け時の左上の座標
 def overlay(src_image, overlay_image, pos_x, pos_y):
@@ -40,7 +41,7 @@ def overlay(src_image, overlay_image, pos_x, pos_y):
 def delete_pad(image): 
     orig_h, orig_w = image.shape[:2]
     mask = np.argwhere(image[:, :, 3] > 128) # alphaチャンネルの条件、!= 0 や == 255に調整できる
-    print(len(mask[:, 0]),len(mask[:, 1]))
+    # print(len(mask[:, 0]),len(mask[:, 1]))
     if len(mask[:, 0]) or len(mask[:, 1]):
         (min_y, min_x) = (max(min(mask[:, 0])-1, 0), max(min(mask[:, 1])-1, 0))
         (max_y, max_x) = (min(max(mask[:, 0])+1, orig_h), min(max(mask[:, 1])+1, orig_w))
@@ -48,6 +49,8 @@ def delete_pad(image):
         print("Mask is nothing. Skip padding.")
         (min_y, min_x) = (1, 1)
         (max_y, max_x) = (2, 2)
+        global skip_pad
+        skip_pad = True
     return image[min_y:max_y, min_x:max_x]
 
 # 画像を指定した角度だけ回転させる
@@ -129,35 +132,36 @@ test_images = 2
 # train用の画像生成
 for i in range(train_images):
     sampled_background = random_sampling(background_image, background_height, background_width)
-
     class_id = np.random.randint(len(labels))
     fruit = fruits[class_id]
     fruit = random_rotate_scale_image(fruit)
-
     result, bbox = random_overlay_image(sampled_background, fruit)
     yolo_bbox = yolo_format_bbox(result, bbox)
 
-    # 画像ファイルを保存
-#    image_path = "%s/images/train_%s_%s.jpg" % (base_path, i, labels[class_id])
-    image_path = "%s/images/train_%s_%s.jpg" % (output_path, i, labels[class_id])
-    print("image_path:" + image_path + ":EXIST:" + str(os.path.exists(image_path)) )
-    cv2.imwrite(image_path, result)
+    if skip_pad == False:
+        # 画像ファイルを保存
+        # image_path = "%s/images/train_%s_%s.jpg" % (base_path, i, labels[class_id])
+        image_path = "%s/images/train_%s_%s.jpg" % (output_path, i, labels[class_id])
+        cv2.imwrite(image_path, result)
 
-    # 画像ファイルのパスを追記
-    with open("train.txt", "a") as f:
-        f.write("%s\n" % (image_path))
+        # 画像ファイルのパスを追記
+        with open("train.txt", "a") as f:
+            f.write("%s\n" % (image_path))
 
-    # ラベルファイルを保存
-    # label_path = "%s/labels/train_%s_%s.txt" % (base_path, i, labels[class_id]) 
-    # label_path = "%s\\labels\\train_%s_%s.txt" % (base_path, i, labels[class_id])
-    label_path = "./output/labels/train_%s_%s.txt" % (i, labels[class_id])
-    f = open(label_path, 'w')
-    f.write('')  # 何も書き込まなくてファイルは作成されました
-    f.close()
-    print("label_path:" + label_path + ":EXIST:" + str(os.path.exists(label_path)) )
-
-    with open(label_path, "w") as f:
-        f.write("%s %s %s %s %s" % (class_id, yolo_bbox[0], yolo_bbox[1], yolo_bbox[2], yolo_bbox[3]))
+        # ラベルファイルを保存
+        # label_path = "%s/labels/train_%s_%s.txt" % (base_path, i, labels[class_id]) 
+        # label_path = "%s\\labels\\train_%s_%s.txt" % (base_path, i, labels[class_id])
+        label_path = "./output/labels/train_%s_%s.txt" % (i, labels[class_id])
+        f = open(label_path, 'w')
+        f.write('')  # 何も書き込まなくてファイルは作成されました
+        f.close()
+ 
+        with open(label_path, "w") as f:
+            f.write("%s %s %s %s %s" % (class_id, yolo_bbox[0], yolo_bbox[1], yolo_bbox[2], yolo_bbox[3]))
+    else:
+        print("Skippped frame")
+        skip_pad = False
+        i = i-1
 
     print("train image", i, labels[class_id], yolo_bbox)
 
@@ -172,20 +176,24 @@ for i in range(test_images):
     result, bbox = random_overlay_image(sampled_background, fruit)
     yolo_bbox = yolo_format_bbox(result, bbox)
 
-    # 画像ファイルを保存
-#    image_path = "%s/images/test_%s_%s.jpg" % (base_path, i, labels[class_id])
-    image_path = "%s/images/test_%s_%s.jpg" % (output_path, i, labels[class_id])
-    cv2.imwrite(image_path, result)
+    if skip_pad == False:
+        # 画像ファイルを保存
+        # image_path = "%s/images/test_%s_%s.jpg" % (base_path, i, labels[class_id])
+        image_path = "%s/images/test_%s_%s.jpg" % (output_path, i, labels[class_id])
+        cv2.imwrite(image_path, result)
 
-    # 画像ファイルのパスを追記
-    with open("test.txt", "a") as f:
-        f.write("%s\n" % (image_path))
+        # 画像ファイルのパスを追記
+        with open("test.txt", "a") as f:
+            f.write("%s\n" % (image_path))
 
-    # ラベルファイルを保存
-#    label_path = "%s/labels/test_%s_%s.txt" % (base_path, i, labels[class_id]) 
-    print("output_path",output_path)
-    label_path = "%s/labels/test_%s_%s.txt" % (output_path, i, labels[class_id]) 
-    with open(label_path, "w") as f:
-        f.write("%s %s %s %s %s" % (class_id, yolo_bbox[0], yolo_bbox[1], yolo_bbox[2], yolo_bbox[3]))
+        # ラベルファイルを保存
+    #    label_path = "%s/labels/test_%s_%s.txt" % (base_path, i, labels[class_id]) 
+        label_path = "%s/labels/test_%s_%s.txt" % (output_path, i, labels[class_id]) 
+        with open(label_path, "w") as f:
+            f.write("%s %s %s %s %s" % (class_id, yolo_bbox[0], yolo_bbox[1], yolo_bbox[2], yolo_bbox[3]))
+    else:
+        print("Skippped frame")
+        skip_pad == False
+        i = i -1
 
     print("test image", i, labels[class_id], yolo_bbox)
