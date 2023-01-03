@@ -9,6 +9,7 @@ import os
 #入力画像ディレクトリ
 input_dir = "input"
 output_dir = "export"
+category = "chip"
 input_list = list(pathlib.Path(input_dir).glob('**/*.jpg'))
 
 for i in range(len(input_list)):
@@ -27,7 +28,8 @@ for i in range(len(input_list)):
 	img2 = cv2.bitwise_not(imgA, imgA, mask=mask)
 	
 	file_name = os.path.splitext(os.path.basename(img_file_name))[0]
-	output_file_name = output_dir + "\\" + file_name + ".png"
+	# output_file_name = output_dir + "\\" + file_name + ".png"
+	output_file_name = output_dir + "\\" + category + str(i).zfill(8) + ".png"
 	cv2.imwrite( output_file_name ,img2)
 	
 	## cv2.imwrite('overlay.png',img2)
