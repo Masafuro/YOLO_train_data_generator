@@ -27,10 +27,10 @@ cv2のインストール
 DLL Load failed
 https://qiita.com/nn_tok/items/e3a6b244e29c5a0510b0
 
-
 pathlib : python >= 3.4
 
-
+PILのインストール
+> pip install pillow
 
 # memo
 - [pythonで引数指定](https://qiita.com/stkdev/items/e262dada7b68ea91aa0c)
