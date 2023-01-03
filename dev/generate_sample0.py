@@ -82,18 +82,12 @@ def yolo_format_bbox(image, bbox):
     return(center_x, center_y, w, h)
 
 base_path = os.getcwd()
-# 物体画像フォルダ場所
-# fruit_files = glob.glob("orig_images/*")
-input_path = "export"
-fruit_files = glob.glob( "export/*")
+fruit_files = glob.glob("orig_images/*")
 fruits = []
-print(fruits)
 labels = []
-print(labels)
 for fruit_file in fruit_files:
     labels.append(fruit_file.split("/")[-1].split(".")[0])
     fruits.append(cv2.imread(fruit_file, cv2.IMREAD_UNCHANGED))
-#背景画像指定
 background_image = cv2.imread("background.jpg")
 
 # write label file
@@ -101,23 +95,23 @@ with open("label.txt", "w") as f:
     for label in labels:
         f.write("%s\n" % (label))
 
-#生成設定
 background_height, background_width = (416, 416)
-train_images = 10
-test_images = 2
+train_images = 10000
+test_images = 2000
 
 # train用の画像生成
 for i in range(train_images):
     sampled_background = random_sampling(background_image, background_height, background_width)
+
     class_id = np.random.randint(len(labels))
     fruit = fruits[class_id]
     fruit = random_rotate_scale_image(fruit)
+
     result, bbox = random_overlay_image(sampled_background, fruit)
     yolo_bbox = yolo_format_bbox(result, bbox)
 
     # 画像ファイルを保存
-    image_path = "%s\\output\\images\\train_%s_%s.jpg" % (base_path, i, labels[class_id].lstrip(input_path))
-    print( image_path )
+    image_path = "%s/images/train_%s_%s.jpg" % (base_path, i, labels[class_id])
     cv2.imwrite(image_path, result)
 
     # 画像ファイルのパスを追記
@@ -125,8 +119,7 @@ for i in range(train_images):
         f.write("%s\n" % (image_path))
 
     # ラベルファイルを保存
-    label_path = "%s\\output\\labels\\train_%s_%s.txt" % (base_path, i, labels[class_id].lstrip(input_path))
-    print( label_path ) 
+    label_path = "%s/labels/train_%s_%s.txt" % (base_path, i, labels[class_id]) 
     with open(label_path, "w") as f:
         f.write("%s %s %s %s %s" % (class_id, yolo_bbox[0], yolo_bbox[1], yolo_bbox[2], yolo_bbox[3]))
 
@@ -144,7 +137,7 @@ for i in range(test_images):
     yolo_bbox = yolo_format_bbox(result, bbox)
 
     # 画像ファイルを保存
-    image_path = "%s\\output\\images\\test_%s_%s.jpg" % (base_path, i, labels[class_id].lstrip(input_path))
+    image_path = "%s/images/test_%s_%s.jpg" % (base_path, i, labels[class_id])
     cv2.imwrite(image_path, result)
 
     # 画像ファイルのパスを追記
@@ -152,7 +145,7 @@ for i in range(test_images):
         f.write("%s\n" % (image_path))
 
     # ラベルファイルを保存
-    label_path = "%s\\output\\labels\\test_%s_%s.txt" % (base_path, i, labels[class_id].lstrip(input_path)) 
+    label_path = "%s/labels/test_%s_%s.txt" % (base_path, i, labels[class_id]) 
     with open(label_path, "w") as f:
         f.write("%s %s %s %s %s" % (class_id, yolo_bbox[0], yolo_bbox[1], yolo_bbox[2], yolo_bbox[3]))
 
