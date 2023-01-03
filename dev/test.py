@@ -7,7 +7,7 @@ import os
 
 
 #入力画像ディレクトリ
-input_dir = "gb"
+input_dir = "input"
 output_dir = "export"
 input_list = list(pathlib.Path(input_dir).glob('**/*.jpg'))
 
