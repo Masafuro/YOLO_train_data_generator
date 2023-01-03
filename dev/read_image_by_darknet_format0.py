@@ -1,14 +1,12 @@
 import cv2
 import glob
 
-file_names = glob.glob("./output/images/*")
-print("file_names:",*file_names)
-im_id = file_names[0].split("/")[-1].split(".")[0].lstrip("images\\")
-print("im_id",im_id)
-im = cv2.imread("./output/images/%s.jpg" % (im_id))
+file_names = glob.glob("./images/*")
+im_id = file_names[0].split("/")[-1].split(".")[0]
+im = cv2.imread("./images/%s.jpg" % (im_id))
 (im_h, im_w) = im.shape[:2]
 
-in_file = open("./output/labels/%s.txt" % (im_id))
+in_file = open("./labels/%s.txt" % (im_id))
 (label, x, y, w, h) = in_file.readline().split()
 x = float(x) * im_w
 y = float(y) * im_h
