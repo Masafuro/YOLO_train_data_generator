@@ -40,8 +40,14 @@ def overlay(src_image, overlay_image, pos_x, pos_y):
 def delete_pad(image): 
     orig_h, orig_w = image.shape[:2]
     mask = np.argwhere(image[:, :, 3] > 128) # alphaチャンネルの条件、!= 0 や == 255に調整できる
-    (min_y, min_x) = (max(min(mask[:, 0])-1, 0), max(min(mask[:, 1])-1, 0))
-    (max_y, max_x) = (min(max(mask[:, 0])+1, orig_h), min(max(mask[:, 1])+1, orig_w))
+    print(len(mask[:, 0]),len(mask[:, 1]))
+    if len(mask[:, 0]) or len(mask[:, 1]):
+        (min_y, min_x) = (max(min(mask[:, 0])-1, 0), max(min(mask[:, 1])-1, 0))
+        (max_y, max_x) = (min(max(mask[:, 0])+1, orig_h), min(max(mask[:, 1])+1, orig_w))
+    else:
+        print("Mask is nothing. Skip padding.")
+        (min_y, min_x) = (1, 1)
+        (max_y, max_x) = (2, 2)
     return image[min_y:max_y, min_x:max_x]
 
 # 画像を指定した角度だけ回転させる
