@@ -83,8 +83,8 @@ def yolo_format_bbox(image, bbox):
 
 output_path = "./output"
 print("output_path:" + output_path + ":EXIST:" + str(os.path.exists(output_path)) )
-input_path = "orig_images"
-# input_path = "export"
+# input_path = "orig_images"
+input_path = "export"
 input_glob = input_path + "/*"
 # fruit_files = glob.glob( input_glob )
 fruit_files = glob.glob( input_glob )
@@ -103,7 +103,7 @@ with open("label.txt", "w") as f:
     for label in labels:
         f.write("%s\n" % (label))
 
-background_height, background_width = (416, 416)
+background_height, background_width = (1920, 1920)
 train_images = 10
 test_images = 2
 
