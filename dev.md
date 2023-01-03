@@ -22,6 +22,9 @@ cv2のインストール
 - [openSSLエラー対策 DL v1.1.1s light](https://qiita.com/SatoshiGachiFujimoto/items/6362de71b8756d8341e7)
 > conda install -c conda-forge opencv
 
+pathlib : python >= 3.4
+
+
 
 # memo
 - [pythonで引数指定](https://qiita.com/stkdev/items/e262dada7b68ea91aa0c)
