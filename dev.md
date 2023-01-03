@@ -1,7 +1,7 @@
 # 開発マップ
 
 2023/01/03
----
+
 
 ## 動作試験
 YOLO_train_data_generatorの動作を確認する。
@@ -14,10 +14,6 @@ YOLO_train_data_generatorの動作を確認する。
 - 複数背景画像への対応
 - 出力画像の引数指定
 
-
-
-
----
 
 # memo
 - [pythonで引数指定](https://qiita.com/stkdev/items/e262dada7b68ea91aa0c)
