@@ -4,7 +4,7 @@ import pathlib
 import cv2
 import numpy as np
 import os
-from PIL import Image
+
 
 #入力画像ディレクトリ
 input_dir = "input"
@@ -32,14 +32,6 @@ for i in range(len(input_list)):
 	output_file_name = output_dir + "\\" + category + str(i).zfill(8) + ".png"
 	cv2.imwrite( output_file_name ,img2)
 	
-	# 画像を読み込む
-	image = Image.open( output_file_name )
-	# 不要な透明画素を除去
-	cropped_image = image.crop(image.getbbox())
-	# 画像を保存
-	cropped_image.save(output_file_name)
-
-
 	## cv2.imwrite('overlay.png',img2)
 #    img_np = np.fromfile(img_file_name, dtype=np.uint8)
 #    img = cv2.imdecode(img_np, cv2.IMREAD_COLOR)

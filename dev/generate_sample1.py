@@ -81,15 +81,13 @@ def yolo_format_bbox(image, bbox):
     h = (bbox[1][1] - bbox[0][1]) / orig_h
     return(center_x, center_y, w, h)
 
-base_path = os.getcwd()
-print("base_path:" + base_path + ":EXIST:" + str(os.path.exists(base_path)) )
-output_path = base_path + "\\output"
+output_path = "./output"
 print("output_path:" + output_path + ":EXIST:" + str(os.path.exists(output_path)) )
-fruit_files = glob.glob("orig_images/*")
+fruit_files = glob.glob("export/*")
 fruits = []
 labels = []
 for fruit_file in fruit_files:
-    labels.append(fruit_file.split("/")[-1].split(".")[0].lstrip("orig_images\\"))
+    labels.append(fruit_file.split("/")[-1].split(".")[0].lstrip("export\\"))
     fruits.append(cv2.imread(fruit_file, cv2.IMREAD_UNCHANGED))
 background_image = cv2.imread("background.jpg")
 print("labels[]:", labels)
@@ -116,7 +114,8 @@ for i in range(train_images):
 
     # 画像ファイルを保存
 #    image_path = "%s/images/train_%s_%s.jpg" % (base_path, i, labels[class_id])
-    image_path = "%s\\images\\train_%s_%s.jpg" % (base_path, i, labels[class_id])
+    image_path = "%s/images/train_%s_%s.jpg" % (output_path, i, labels[class_id])
+    print("image_path:" + image_path + ":EXIST:" + str(os.path.exists(image_path)) )
     cv2.imwrite(image_path, result)
 
     # 画像ファイルのパスを追記
@@ -124,9 +123,7 @@ for i in range(train_images):
         f.write("%s\n" % (image_path))
 
     # ラベルファイルを保存
-#    label_path = "%s/labels/train_%s_%s.txt" % (base_path, i, labels[class_id]) 
-    label_dir = "%s\\labels" % (output_path)
-    print("label_dir:" + label_dir + ":EXIST:" + str(os.path.exists(label_dir)) )
+    # label_path = "%s/labels/train_%s_%s.txt" % (base_path, i, labels[class_id]) 
     # label_path = "%s\\labels\\train_%s_%s.txt" % (base_path, i, labels[class_id])
     label_path = "./output/labels/train_%s_%s.txt" % (i, labels[class_id])
     f = open(label_path, 'w')
@@ -152,7 +149,7 @@ for i in range(test_images):
 
     # 画像ファイルを保存
 #    image_path = "%s/images/test_%s_%s.jpg" % (base_path, i, labels[class_id])
-    image_path = "%s\\images\\test_%s_%s.jpg" % (base_path, i, labels[class_id])
+    image_path = "%s/images/test_%s_%s.jpg" % (output_path, i, labels[class_id])
     cv2.imwrite(image_path, result)
 
     # 画像ファイルのパスを追記
@@ -161,7 +158,8 @@ for i in range(test_images):
 
     # ラベルファイルを保存
 #    label_path = "%s/labels/test_%s_%s.txt" % (base_path, i, labels[class_id]) 
-    label_path = "%s\\labels\\test_%s_%s.txt" % (base_path, i, labels[class_id]) 
+    print("output_path",output_path)
+    label_path = "%s/labels/test_%s_%s.txt" % (output_path, i, labels[class_id]) 
     with open(label_path, "w") as f:
         f.write("%s %s %s %s %s" % (class_id, yolo_bbox[0], yolo_bbox[1], yolo_bbox[2], yolo_bbox[3]))
 
