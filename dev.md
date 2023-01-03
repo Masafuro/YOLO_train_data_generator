@@ -17,6 +17,11 @@ YOLO_train_data_generatorの動作を確認する。
 ### コメント
 まずpythonによるグリーンバック透過からやった方がいいかも？？
 
+### グリーンバック透過
+cv2のインストール
+- [openSSLエラー対策 DL v1.1.1s light](https://qiita.com/SatoshiGachiFujimoto/items/6362de71b8756d8341e7)
+> conda install -c conda-forge opencv
+
 
 # memo
 - [pythonで引数指定](https://qiita.com/stkdev/items/e262dada7b68ea91aa0c)
