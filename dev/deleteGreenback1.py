@@ -15,7 +15,6 @@ files = os.listdir(input_dir_base)
 files_dir = [f for f in files if os.path.isdir(os.path.join(input_dir_base, f))]
 print(files_dir)
 
-
 for j in range(len(files_dir)):
     category = files_dir[j]
     print("category:",category)
@@ -32,7 +31,7 @@ for j in range(len(files_dir)):
     
     for i in range(len(input_list)):
         img_file_name = str(input_list[i])
-        print( img_file_name )
+        print( "IMPORT:",img_file_name )
 
         ## グリーンバック除去&png出力
         img = cv2.imread( img_file_name , -1)
@@ -54,5 +53,5 @@ for j in range(len(files_dir)):
         # 画像を保存
         cropped_image.save(output_file_name)
 
-        print(output_file_name)
+        print("EXPORT:",output_file_name)
 
