@@ -1,48 +1,48 @@
-# ground truth付き画像の合成スクリプト
+# 開発マップ
 
-## ファイル構成
-- setup.sh
-　ディレクトリ構成を初期化するスクリプト
+2023/01/03
 
-- background.jpg
-　合成元の背景画像。
+### 開発メモ
+| 日付 | 内容 |
+----|----
+| 2023/01/04 12:30 | deleteGreenback.pyでラベル名のフォルダ構造から画像を取得し、trimmedフォルダにラベル名フォルダで背景を透過、トリミングした画像を出力 |
+| 希望 | そのフォルダ構造から画像を取得し、ラベル名に反映、合成画像、アノテーションファイルを生成 |
 
-- orig_images/
-　合成対象の各カテゴリの画像ここに保存する。ファイル名はそれぞれラベル名とする(appleならapple.png)。合成用画像なので、全てalphaチャンネル付きのpngファイルである必要がある。
-- images/*.jpg
-　合成結果として生成された画像がここに保存される。
+---
 
-- labels/*.txt
-　合成結果として生成された画像のアノテーション(class_idとground_truth情報)ファイル。このアノテーションファイルは既にyolo専用フォーマットに調整済み。
+# 過去ログ
+## 動作試験
+YOLO_train_data_generatorの動作を確認する。
 
-- train.txt
-　訓練用画像ファイルへのパス一覧がここに書かれる。
+## 遠し動作試験
+グリーンバック撮影とIrfanviewを使い、透過pngを生成し、YOLO_train_data_generatorにて所定のタグを得られるか確認する。
 
-- test.txt
-　テスト用画像ファイルへのパス一覧がここに書かれる。
+## YTDG修正
+- ラベル名称のつけ方
+- 複数背景画像への対応
+- 出力画像の引数指定
 
-- label.txt
-　ラベル名の一覧がここに書かれる。
+### コメント
+まずpythonによるグリーンバック透過からやった方がいいかも？？
 
-## ディレクトリ初期化
-以下のコマンドでディレクトリ構成を初期化する。
+### グリーンバック透過
+cv2のインストール
+- [openSSLエラー対策 DL v1.1.1s light](https://qiita.com/SatoshiGachiFujimoto/items/6362de71b8756d8341e7)
 
-```
-./setup.sh
-```
-ここでは、`images/` `labels/` ディレクトリを空にし、`train.txt`及び`test.txt`、`label.txt`ファイルを削除している。
+cv2のインストール
+> conda install -c conda-forge opencv
 
-## 合成画像の生成
-以下のコマンドで、`orig_images/*.png`と`./background.jpg`を読み込み、そこから指定した枚数分の合成画像を生成する。生成枚数や合成のオプションは`generate_sample.py`のソース内で変更可能。デフォルトでは10000枚生成。background.jpgから416x416領域をランダムで切り取る。合成画像は1〜3倍のランダムスケール、ランダム回転を加えて合成している。
+DLL Load failed
+https://qiita.com/nn_tok/items/e3a6b244e29c5a0510b0
 
-```
-python generate_sample.py
-```
+pathlib : python >= 3.4
+
+PILのインストール
+> pip install pillow
+
+# memo
+- [pythonで引数指定](https://qiita.com/stkdev/items/e262dada7b68ea91aa0c)
+- [pythonでフォルダ内画像の一括処理](https://zenn.dev/k_neko3/articles/8b89b0ab1c29f8)
+- [pythonによるグリーンバック透過](https://teratail.com/questions/355396?link=qa_related_sp)
 
 
-## 合成画像のチェック
-以下のコマンドで、`images/`ディレクトリ内の最初の画像と、対応する`labels/`内のyoloフォーマットのアノテーションを読み込んで描画する。描画した結果ground truth boxが正しく囲まれていれば問題ない。
-
-```
-python read_image_by_darknet_format.py
-```
