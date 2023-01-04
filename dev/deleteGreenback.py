@@ -7,10 +7,17 @@ import os
 from PIL import Image
 
 #入力画像ディレクトリ
-input_dir = "input"
-output_dir = "export"
+input_dir = "object"
+output_dir = "trimmed"
 category = "chip"
 input_list = list(pathlib.Path(input_dir).glob('**/*.jpg'))
+
+
+files = os.listdir(input_dir)
+files_dir = [f for f in files if os.path.isdir(os.path.join(input_dir, f))]
+print(files_dir)
+
+
 
 for i in range(len(input_list)):
 	img_file_name = str(input_list[i])
