@@ -23,7 +23,7 @@
 2023/01/04 現在
 - **目下、開発中でところどころ動いていません。**
 - deleteGreenback1.py:object画像からグリーンバック背景を除去、トリミングし、物体だけの背景が透過された画像を生成する。
-- generate?sample4.py:deleteGreenback1.pyで作った画像を背景をランダムに合成し、アノテーションと画像を出力する。
+- generatesample4.py:deleteGreenback1.pyで作った画像を背景をランダムに合成し、アノテーションと画像を出力する。
 -- '--loop 10' で10回ループさせるのオプションコマンド
 
 
