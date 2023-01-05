@@ -105,20 +105,37 @@ input_glob = input_path + "/*"
 # fruit_files = glob.glob( input_glob )
 fruit_files = glob.glob( input_glob )
 print("fruit_files:", fruit_files)
+# ここで画像をとりそこねている。
+
+
+
 fruits = []
 labels = []
 for fruit_file in fruit_files:
 #    labels.append(fruit_file.split("/")[-1].split(".")[0].lstrip(input_path + "\\"))
     labels.append(fruit_file.split("/")[-1].split(".")[0].replace( input_path +"\\",'',1))
+    # ここで画像を取り込んでいる。
     fruits.append(cv2.imread(fruit_file, cv2.IMREAD_UNCHANGED))
 background_image = cv2.imread(background_path + "/background.jpg")
 height, width, channels = background_image.shape[:3]
+print("fruits[]:",fruits)
 print("labels[]:", labels)
 print("height:", height,":width:",width,":channels:",channels)
 # write label file
 with open("label.txt", "w") as f:
     for label in labels:
         f.write("%s\n" % (label))
+
+
+print("len(fruit_files):",len(fruit_files))
+import_img = [['' for i in range(3)] for j in range(3)]
+print("import_img:",import_img)
+for i in range(len(fruit_files)):
+    print(i,":labels[i]:",labels[i])
+    input_image_path = input_glob.rstrip("/*") + "/" +labels[i] + "/*.png"
+    print("input_image_path:",input_image_path )
+    import_img[i] = glob.glob( input_image_path )
+    print(i,"import_img[i]:",import_img[i])
 
 background_height, background_width = (height, width)
 
@@ -128,17 +145,17 @@ if args.loop:
 else:
     train_images = 10
 
-print("train_images:",train_images)
 test_images = 2
 
 # train用の画像生成
 for i in range(train_images):
     sampled_background = random_sampling(background_image, background_height, background_width)
-    print("END sampled_background.")
+    print("len(labels):",len(labels))
     class_id = np.random.randint(len(labels))
-    print("END class_id.")
+    print("class_id:",class_id)
     print("fruits[class_id]:",fruits[class_id])
-    fruit = fruits[class_id]
+    # fruit = fruits[class_id]
+    fruit = import_img[0][0]
     print("fruit:",fruit)
     fruit = random_rotate_scale_image(fruit)
     print("END fruit.")
