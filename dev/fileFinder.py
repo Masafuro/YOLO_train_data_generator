@@ -6,7 +6,7 @@ import argparse
 parser = argparse.ArgumentParser()
 
 # "--info" 指定でインポートした画像をprintで出力
-parser.add_argument("--info", help="optional", action="store_true")
+parser.add_argument("--importInfo", help="optional", action="store_true")
 args = parser.parse_args()
 
 print("\n")
@@ -19,14 +19,6 @@ files = os.listdir( object_path )
 files_dir = [f for f in files if os.path.isdir(os.path.join( object_path , f))]
 labels = files_dir
 print("labels:", labels)
-
-'''
-# 画像一覧を取得
-path = "./object/chips"
-files = os.listdir( path )
-files_file = [f for f in files if os.path.isfile(os.path.join(path, f))]
-print(files_file)   # ['file1', 'file2.txt', 'file3.jpg']
-'''
 
 maxFileNum = 0
 maxLabelNum = len(labels)
@@ -51,7 +43,7 @@ for j in range( maxLabelNum ):
 
 print( "Images imported." )
 
-if args.info:
+if args.importInfo:
     print( tabulate( img_array ) )
 
 print("\n*************************\n")
