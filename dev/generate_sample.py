@@ -12,30 +12,34 @@ skip_pad = False
 
 # src_imageの背景画像に対して、overlay_imageのalpha画像を貼り付ける。pos_xとpos_yは貼り付け時の左上の座標
 def overlay(src_image, overlay_image, pos_x, pos_y):
-    # オーバレイ画像のサイズを取得
-    ol_height, ol_width = overlay_image.shape[:2]
+    print("def overlay.")
+    if skip_pad == False:
+        # オーバレイ画像のサイズを取得
+        ol_height, ol_width = overlay_image.shape[:2]
 
-    # OpenCVの画像データをPILに変換
-    # BGRAからRGBAへ変換
-    src_image_RGBA = cv2.cvtColor(src_image, cv2.COLOR_BGR2RGB)
-    overlay_image_RGBA = cv2.cvtColor(overlay_image, cv2.COLOR_BGRA2RGBA)
+        # OpenCVの画像データをPILに変換
+        # BGRAからRGBAへ変換
+        src_image_RGBA = cv2.cvtColor(src_image, cv2.COLOR_BGR2RGB)
+        overlay_image_RGBA = cv2.cvtColor(overlay_image, cv2.COLOR_BGRA2RGBA)
 
-    #　PILに変換
-    src_image_PIL=Image.fromarray(src_image_RGBA)
-    overlay_image_PIL=Image.fromarray(overlay_image_RGBA)
+        #　PILに変換
+        src_image_PIL=Image.fromarray(src_image_RGBA)
+        overlay_image_PIL=Image.fromarray(overlay_image_RGBA)
 
-    # 合成のため、RGBAモードに変更
-    src_image_PIL = src_image_PIL.convert('RGBA')
-    overlay_image_PIL = overlay_image_PIL.convert('RGBA')
+        # 合成のため、RGBAモードに変更
+        src_image_PIL = src_image_PIL.convert('RGBA')
+        overlay_image_PIL = overlay_image_PIL.convert('RGBA')
 
-    # 同じ大きさの透過キャンパスを用意
-    tmp = Image.new('RGBA', src_image_PIL.size, (255, 255,255, 0))
-    # 用意したキャンパスに上書き
-    tmp.paste(overlay_image_PIL, (pos_x, pos_y), overlay_image_PIL)
-    # オリジナルとキャンパスを合成して保存
-    result = Image.alpha_composite(src_image_PIL, tmp)
+        # 同じ大きさの透過キャンパスを用意
+        tmp = Image.new('RGBA', src_image_PIL.size, (255, 255,255, 0))
+        # 用意したキャンパスに上書き
+        tmp.paste(overlay_image_PIL, (pos_x, pos_y), overlay_image_PIL)
+        # オリジナルとキャンパスを合成して保存
+        result = Image.alpha_composite(src_image_PIL, tmp)
 
-    return  cv2.cvtColor(np.asarray(result), cv2.COLOR_RGBA2BGRA)
+        return  cv2.cvtColor(np.asarray(result), cv2.COLOR_RGBA2BGRA)
+    else:
+        return None
 
 # 画像周辺のパディングを削除
 def delete_pad(image): 
@@ -83,10 +87,11 @@ def random_overlay_image(src_image, overlay_image,w,h):
     # print("sw,sh:",src_w,src_h,":w,h:",w,h,":ow,oh:",overlay_w,overlay_h)
     rh = src_h-overlay_h+1
     rw = src_w-overlay_w+1
-    print("rh,rw",rh,rw)
+    oh = overlay_h
+    ow = overlay_w
     if rh > 0 and rw > 0 and h > rh and w > rw:
-        y = np.random.randint(src_h-overlay_h+1)
-        x = np.random.randint(src_w-overlay_w+1)
+        y = np.random.randint( rh )
+        x = np.random.randint( rw )
         bbox = ((x, y), (x+overlay_w, y+overlay_h))
     else:
         x = 0
@@ -94,6 +99,7 @@ def random_overlay_image(src_image, overlay_image,w,h):
         bbox = ((0, 0), (1, 1))
         global skip_pad
         skip_pad = True
+    print("x,y,oh,ow,rh,rw:",x,y,oh,ow,rh,rw)
     return overlay(src_image, overlay_image, x, y), bbox
 
 # 4点座標のbboxをyoloフォーマットに変換
@@ -230,8 +236,9 @@ for k in range(loop):
             class_id = np.random.randint(len(labels))
             imgData[j][i] = random_rotate_scale_image( imgData[j][i] )
             result, bbox = random_overlay_image(sampled_background, imgData[j][i], width, height)
-            yolo_bbox = yolo_format_bbox(result, bbox)
-            print(k,j,i,":",yolo_bbox)
+            if skip_pad == False:
+                yolo_bbox = yolo_format_bbox(result, bbox)
+                print(k,j,i,":",yolo_bbox)
 
             if skip_pad == False:
                 # 画像ファイルを保存
