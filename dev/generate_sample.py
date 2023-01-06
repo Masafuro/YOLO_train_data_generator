@@ -4,6 +4,8 @@ import glob
 import numpy as np
 from PIL import Image
 import argparse
+import psutil
+import math
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--loop")
@@ -42,30 +44,42 @@ def overlay(src_image, overlay_image, pos_x, pos_y):
         return None
 
 # 画像周辺のパディングを削除
-def delete_pad(image): 
-    orig_h, orig_w = image.shape[:2]
-    mask = np.argwhere(image[:, :, 3] > 128) # alphaチャンネルの条件、!= 0 や == 255に調整できる
-    # print(len(mask[:, 0]),len(mask[:, 1]))
-    if len(mask[:, 0]) or len(mask[:, 1]):
-        (min_y, min_x) = (max(min(mask[:, 0])-1, 0), max(min(mask[:, 1])-1, 0))
-        (max_y, max_x) = (min(max(mask[:, 0])+1, orig_h), min(max(mask[:, 1])+1, orig_w))
-    else:
+def delete_pad(image):
+    print("type(image):",type(image))
+    
+    if image is None:
+        mask = None
         (min_y, min_x) = (1, 1)
         (max_y, max_x) = (2, 2)
-        global skip_pad
-        skip_pad = True
-    return image[min_y:max_y, min_x:max_x]
+        return None
+    else:
+        orig_h, orig_w = image.shape[:2]
+        mask = np.argwhere(image[:, :, 3] > 128) # alphaチャンネルの条件、!= 0 や == 255に調整できる
+
+        if len(mask[:, 0]) or len(mask[:, 1]):
+            (min_y, min_x) = (max(min(mask[:, 0])-1, 0), max(min(mask[:, 1])-1, 0))
+            (max_y, max_x) = (min(max(mask[:, 0])+1, orig_h), min(max(mask[:, 1])+1, orig_w))
+        else:
+            (min_y, min_x) = (1, 1)
+            (max_y, max_x) = (2, 2)
+            global skip_pad
+            skip_pad = True
+
+        return image[min_y:max_y, min_x:max_x]
+    
 
 # 画像を指定した角度だけ回転させる
 def rotate_image(image, angle):
     orig_h, orig_w = image.shape[:2]
-    matrix = cv2.getRotationMatrix2D((orig_h/2, orig_w/2), angle, 1)
+    print("orig_h,orig_w,angle", orig_h, orig_w,angle)
+    matrix = cv2.getRotationMatrix2D((math.ceil(orig_h/2), math.ceil(orig_w/2) ), angle, 1.0)
     return cv2.warpAffine(image, matrix, (orig_h, orig_w))
 
 # 画像をスケーリングする
 def scale_image(image, scale):
     orig_h, orig_w = image.shape[:2]
-    return cv2.resize(image, (int(orig_w*scale), int(orig_h*scale)))
+    print("int(orig_w*scale), int(orig_h*scale):",int(orig_w*scale), int(orig_h*scale))
+    return cv2.resize(image, (int(math.ceil(orig_w*scale)), int(math.ceil(orig_h*scale))))
 
 # 背景画像から、指定したhとwの大きさの領域をランダムで切り抜く
 def random_sampling(image, h, w): 
@@ -76,31 +90,50 @@ def random_sampling(image, h, w):
 
 # 画像をランダムに回転、スケールしてから返す
 def random_rotate_scale_image(image):
-    image = rotate_image(image, np.random.randint(360))
-    image = scale_image(image, 1 + np.random.rand() * 2) # 1 ~ 3倍
+    angle = np.random.randint(360)
+    scale = round( 0.1 + np.random.rand() * 2, 1)
+    print("angle,scale:",angle,scale)
+    orig_h, orig_w = image.shape[:2]
+    print("orig_h, orig_w:",orig_h, orig_w)
+    if orig_h > 0 and orig_w > 0:
+        image = rotate_image(image, angle)
+        # image = scale_image(image, 1 + np.random.rand() * 2) # 1 ~ 3倍
+        image = scale_image(image, scale) # 1/10 ~ 2倍
+    else:
+        skip_pad = True
+        image = None
+
     return delete_pad(image)
 
 # overlay_imageを、src_imageのランダムな場所に合成して、そこのground_truthを返す。
 def random_overlay_image(src_image, overlay_image,w,h):
-    src_h, src_w = src_image.shape[:2]
-    overlay_h, overlay_w = overlay_image.shape[:2]
-    # print("sw,sh:",src_w,src_h,":w,h:",w,h,":ow,oh:",overlay_w,overlay_h)
-    rh = src_h-overlay_h+1
-    rw = src_w-overlay_w+1
-    oh = overlay_h
-    ow = overlay_w
-    if rh > 0 and rw > 0 and h > rh and w > rw:
-        y = np.random.randint( rh )
-        x = np.random.randint( rw )
-        bbox = ((x, y), (x+overlay_w, y+overlay_h))
-    else:
-        x = 0
-        y = 0
-        bbox = ((0, 0), (1, 1))
-        global skip_pad
+    global skip_pad
+    if src_image is None:
         skip_pad = True
-    print("x,y,oh,ow,rh,rw:",x,y,oh,ow,rh,rw)
-    return overlay(src_image, overlay_image, x, y), bbox
+
+        return np.empty(2,dtype=float)
+    elif overlay_image is None:
+        skip_pad = True
+        return np.empty(2,dtype=float)
+    else:    
+        src_h, src_w = src_image.shape[:2]
+        overlay_h, overlay_w = overlay_image.shape[:2]
+        # print("sw,sh:",src_w,src_h,":w,h:",w,h,":ow,oh:",overlay_w,overlay_h)
+        rh = src_h-overlay_h+1
+        rw = src_w-overlay_w+1
+        oh = overlay_h
+        ow = overlay_w
+        if rh > 0 and rw > 0 and h > rh and w > rw:
+            y = np.random.randint( rh )
+            x = np.random.randint( rw )
+            bbox = ((x, y), (x+overlay_w, y+overlay_h))
+        else:
+            x = 0
+            y = 0
+            bbox = ((0, 0), (1, 1))
+            skip_pad = True
+        print("x,y,oh,ow,rh,rw:",x,y,oh,ow,rh,rw)
+        return overlay(src_image, overlay_image, x, y), bbox
 
 # 4点座標のbboxをyoloフォーマットに変換
 def yolo_format_bbox(image, bbox):
@@ -210,7 +243,6 @@ for fruit_file in fruit_files:
     fruits.append(cv2.imread(fruit_file, cv2.IMREAD_UNCHANGED))
 '''
 
-
 background_image = cv2.imread(background_path + "/background.jpg")
 height, width, channels = background_image.shape[:3]
 print("height:", height,":width:",width,":channels:",channels)
@@ -232,10 +264,19 @@ else:
 for k in range(loop):
     for j in range( len(labels) ):
         for i in range( len(fruits[j]) ):
+            # メモリ使用率を取得
+            mem = psutil.virtual_memory() 
+            print("MEM:",mem.percent, end=":")
+
             sampled_background = random_sampling(background_image, background_height, background_width)
             class_id = np.random.randint(len(labels))
-            imgData[j][i] = random_rotate_scale_image( imgData[j][i] )
-            result, bbox = random_overlay_image(sampled_background, imgData[j][i], width, height)
+            print("fruits[j][i]:",fruits[j][i])
+            if fruits[j][i]:
+                imgData[j][i] = random_rotate_scale_image( imgData[j][i] )
+                result, bbox = random_overlay_image(sampled_background, imgData[j][i], width, height)
+            else:
+                skip_pad == True
+                print("no data.")
             if skip_pad == False:
                 yolo_bbox = yolo_format_bbox(result, bbox)
                 print(k,j,i,":",yolo_bbox)
