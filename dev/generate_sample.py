@@ -46,7 +46,6 @@ def delete_pad(image):
         (min_y, min_x) = (max(min(mask[:, 0])-1, 0), max(min(mask[:, 1])-1, 0))
         (max_y, max_x) = (min(max(mask[:, 0])+1, orig_h), min(max(mask[:, 1])+1, orig_w))
     else:
-        print("Mask is nothing. Skip padding.")
         (min_y, min_x) = (1, 1)
         (max_y, max_x) = (2, 2)
         global skip_pad
@@ -78,12 +77,23 @@ def random_rotate_scale_image(image):
     return delete_pad(image)
 
 # overlay_imageを、src_imageのランダムな場所に合成して、そこのground_truthを返す。
-def random_overlay_image(src_image, overlay_image):
+def random_overlay_image(src_image, overlay_image,w,h):
     src_h, src_w = src_image.shape[:2]
     overlay_h, overlay_w = overlay_image.shape[:2]
-    y = np.random.randint(src_h-overlay_h+1)
-    x = np.random.randint(src_w-overlay_w+1)
-    bbox = ((x, y), (x+overlay_w, y+overlay_h))
+    # print("sw,sh:",src_w,src_h,":w,h:",w,h,":ow,oh:",overlay_w,overlay_h)
+    rh = src_h-overlay_h+1
+    rw = src_w-overlay_w+1
+    print("rh,rw",rh,rw)
+    if rh > 0 and rw > 0 and h > rh and w > rw:
+        y = np.random.randint(src_h-overlay_h+1)
+        x = np.random.randint(src_w-overlay_w+1)
+        bbox = ((x, y), (x+overlay_w, y+overlay_h))
+    else:
+        x = 0
+        y = 0
+        bbox = ((0, 0), (1, 1))
+        global skip_pad
+        skip_pad = True
     return overlay(src_image, overlay_image, x, y), bbox
 
 # 4点座標のbboxをyoloフォーマットに変換
@@ -94,6 +104,61 @@ def yolo_format_bbox(image, bbox):
     w = (bbox[1][0] - bbox[0][0]) / orig_w
     h = (bbox[1][1] - bbox[0][1]) / orig_h
     return(center_x, center_y, w, h)
+
+def fileFinder():
+    import os
+    import pathlib
+    from tabulate import tabulate
+
+    import argparse
+    parser = argparse.ArgumentParser()
+
+    # "--info" 指定でインポートした画像をprintで出力
+    parser.add_argument("--importInfo", help="optional", action="store_true")
+    args = parser.parse_args()
+
+    print("\n")
+    print("START fileFinder.py")
+    print("\n*************************\n")
+
+    object_path ="./trimmed"
+
+    files = os.listdir( object_path )
+    files_dir = [f for f in files if os.path.isdir(os.path.join( object_path , f))]
+    labels = files_dir
+    print("labels:", labels)
+
+    maxFileNum = 0
+    maxLabelNum = len(labels)
+
+    # ラベルフォルダからの画像取得
+    for w in labels:
+        img_path = object_path + "/" + w
+        img_list = list(pathlib.Path( img_path ).glob('**/*.png'))
+        if maxFileNum < len(img_list):
+            maxFileNum = len(img_list)
+
+    # ラベルの総数、ラベルフォルダ内の画像のうち、最大数を取得
+    print( "maxFileNum:"+ str(maxFileNum) )
+    print( "maxLabelNum:" + str(maxLabelNum) )
+
+    img_array = [[0 for i in range( maxFileNum )] for j in range( maxLabelNum )] #配列[ラベル数][最大ファイル数]を宣言
+
+    for j in range( maxLabelNum ):
+        # for i in range( maxFileNum ):
+        img_array_path = object_path + "/" + labels[j]
+        img_array[j] = list(pathlib.Path( img_array_path ).glob('**/*.png'))
+
+    print( "Images imported." )
+
+    if args.importInfo:
+        print( tabulate( img_array ) )
+
+    print("\n*************************\n")
+    print("END fileFinder.py")
+    return img_array, labels, maxFileNum
+
+    # print(img_array[3][1]) #img_array チェック用
 
 output_path = "./output"
 input_path = "trimmed"
@@ -108,7 +173,7 @@ print("fruit_files:", fruit_files)
 # ここで画像をとりそこねている。
 
 
-
+'''
 fruits = []
 labels = []
 for fruit_file in fruit_files:
@@ -116,82 +181,87 @@ for fruit_file in fruit_files:
     labels.append(fruit_file.split("/")[-1].split(".")[0].replace( input_path +"\\",'',1))
     # ここで画像を取り込んでいる。
     fruits.append(cv2.imread(fruit_file, cv2.IMREAD_UNCHANGED))
+'''
+
+fruits, labels, maxFileNum = fileFinder()
+print("labels:")
+print(labels)
+
+# imgData = [[0 for i in range( maxFileNum )] for j in range( len(labels) )] #配列[ラベル数][最大ファイル数]を宣言
+imgData = [[0 for i in range( maxFileNum )] for j in range( len(labels) )]
+
+for j in range( len(labels) ):
+    for i in range( len(fruits[j]) ):
+        print( j,",",i, end=":")
+        print(fruits[j][i])
+        imgData[j][i] = cv2.imread(str(fruits[j][i]), cv2.IMREAD_UNCHANGED)
+
+'''
+for fruit_file in fruit_files:
+#    labels.append(fruit_file.split("/")[-1].split(".")[0].lstrip(input_path + "\\"))
+    labels.append(fruit_file.split("/")[-1].split(".")[0].replace( input_path +"\\",'',1))
+    # ここで画像を取り込んでいる。
+    fruits.append(cv2.imread(fruit_file, cv2.IMREAD_UNCHANGED))
+'''
+
+
 background_image = cv2.imread(background_path + "/background.jpg")
 height, width, channels = background_image.shape[:3]
-print("fruits[]:",fruits)
-print("labels[]:", labels)
 print("height:", height,":width:",width,":channels:",channels)
 # write label file
 with open("label.txt", "w") as f:
     for label in labels:
         f.write("%s\n" % (label))
 
-
-print("len(fruit_files):",len(fruit_files))
-import_img = [['' for i in range(3)] for j in range(3)]
-print("import_img:",import_img)
-for i in range(len(fruit_files)):
-    print(i,":labels[i]:",labels[i])
-    input_image_path = input_glob.rstrip("/*") + "/" +labels[i] + "/*.png"
-    print("input_image_path:",input_image_path )
-    import_img[i] = glob.glob( input_image_path )
-    print(i,"import_img[i]:",import_img[i])
-
 background_height, background_width = (height, width)
 
 if args.loop:
     # --loop オプションから引数をゲット
-    train_images = int(args.loop)
+    loop = int(args.loop)
 else:
-    train_images = 10
+    loop = 10
 
-test_images = 2
 
 # train用の画像生成
-for i in range(train_images):
-    sampled_background = random_sampling(background_image, background_height, background_width)
-    print("len(labels):",len(labels))
-    class_id = np.random.randint(len(labels))
-    print("class_id:",class_id)
-    print("fruits[class_id]:",fruits[class_id])
-    # fruit = fruits[class_id]
-    fruit = import_img[0][0]
-    print("fruit:",fruit)
-    fruit = random_rotate_scale_image(fruit)
-    print("END fruit.")
-    result, bbox = random_overlay_image(sampled_background, fruit)
-    print("END result, bbox.")    
-    yolo_bbox = yolo_format_bbox(result, bbox)
-    print("END yolo_bbox.")
-    
+for k in range(loop):
+    for j in range( len(labels) ):
+        for i in range( len(fruits[j]) ):
+            sampled_background = random_sampling(background_image, background_height, background_width)
+            class_id = np.random.randint(len(labels))
+            imgData[j][i] = random_rotate_scale_image( imgData[j][i] )
+            result, bbox = random_overlay_image(sampled_background, imgData[j][i], width, height)
+            yolo_bbox = yolo_format_bbox(result, bbox)
+            print(k,j,i,":",yolo_bbox)
 
-    if skip_pad == False:
-        # 画像ファイルを保存
-        # image_path = "%s/images/train_%s_%s.jpg" % (base_path, i, labels[class_id])
-        image_path = "%s/images/train_%s_%s.jpg" % (output_path, i, labels[class_id])
-        cv2.imwrite(image_path, result)
+            if skip_pad == False:
+                # 画像ファイルを保存
+                # image_path = "%s/images/train_%s_%s.jpg" % (base_path, i, labels[class_id])
+                image_path = "%s/images/train_%s_%s.jpg" % (output_path, i, labels[class_id])
+                cv2.imwrite(image_path, result)
 
-        # 画像ファイルのパスを追記
-        with open("train.txt", "a") as f:
-            f.write("%s\n" % (image_path))
+                # 画像ファイルのパスを追記
+                with open("train.txt", "a") as f:
+                    f.write("%s\n" % (image_path))
 
-        # ラベルファイルを保存
-        # label_path = "%s/labels/train_%s_%s.txt" % (base_path, i, labels[class_id]) 
-        # label_path = "%s\\labels\\train_%s_%s.txt" % (base_path, i, labels[class_id])
-        label_path = "./output/labels/train_%s_%s.txt" % (i, labels[class_id])
-        f = open(label_path, 'w')
-        f.write('')  # 何も書き込まなくてファイルは作成されました
-        f.close()
- 
-        with open(label_path, "w") as f:
-            f.write("%s %s %s %s %s" % (class_id, yolo_bbox[0], yolo_bbox[1], yolo_bbox[2], yolo_bbox[3]))
-    else:
-        print("Skippped frame")
-        skip_pad = False
-        i = i-1
+                # ラベルファイルを保存
+                # label_path = "%s/labels/train_%s_%s.txt" % (base_path, i, labels[class_id]) 
+                # label_path = "%s\\labels\\train_%s_%s.txt" % (base_path, i, labels[class_id])
+                label_path = "./output/labels/train_%s_%s.txt" % (i, labels[class_id])
+                f = open(label_path, 'w')
+                f.write('')  # 何も書き込まなくてファイルは作成されました
+                f.close()
+        
+                with open(label_path, "w") as f:
+                    f.write("%s %s %s %s %s" % (class_id, yolo_bbox[0], yolo_bbox[1], yolo_bbox[2], yolo_bbox[3]))
+            else:
+                print("Skippped frame")
+                skip_pad = False
+                i = i-1
 
-    print("train image", i, labels[class_id], yolo_bbox)
 
+print("**************I'm now here.****************")
+
+''' # 一旦テスト用画像生成は廃止。
 # test用の画像生成
 for i in range(test_images):
     sampled_background = random_sampling(background_image, background_height, background_width)
@@ -224,3 +294,5 @@ for i in range(test_images):
         i = i -1
 
     print("test image", i, labels[class_id], yolo_bbox)
+'''
+
