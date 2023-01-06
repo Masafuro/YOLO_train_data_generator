@@ -90,20 +90,24 @@ def random_sampling(image, h, w):
 
 # 画像をランダムに回転、スケールしてから返す
 def random_rotate_scale_image(image):
-    angle = np.random.randint(360)
-    scale = round( 0.1 + np.random.rand() * 2, 1)
-    print("angle,scale:",angle,scale)
-    orig_h, orig_w = image.shape[:2]
-    print("orig_h, orig_w:",orig_h, orig_w)
-    if orig_h > 0 and orig_w > 0:
-        image = rotate_image(image, angle)
-        # image = scale_image(image, 1 + np.random.rand() * 2) # 1 ~ 3倍
-        image = scale_image(image, scale) # 1/10 ~ 2倍
-    else:
+    if image is None:
         skip_pad = True
-        image = None
+        return None
+    else:
+        angle = np.random.randint(360)
+        scale = round( 0.1 + np.random.rand() * 2, 1)
+        print("angle,scale:",angle,scale)
+        orig_h, orig_w = image.shape[:2]
+        print("orig_h, orig_w:",orig_h, orig_w)
+        if orig_h > 0 and orig_w > 0:
+            image = rotate_image(image, angle)
+            # image = scale_image(image, 1 + np.random.rand() * 2) # 1 ~ 3倍
+            image = scale_image(image, scale) # 1/10 ~ 2倍
+        else:
+            skip_pad = True
+            image = None
 
-    return delete_pad(image)
+        return delete_pad(image)
 
 # overlay_imageを、src_imageのランダムな場所に合成して、そこのground_truthを返す。
 def random_overlay_image(src_image, overlay_image,w,h):
