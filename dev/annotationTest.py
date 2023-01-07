@@ -2,6 +2,9 @@ import cv2
 import glob
 import argparse
 import numpy as np
+import os
+
+print("******START annotationTest.py*****")
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--sample")
@@ -18,32 +21,54 @@ else:
 output_path = "./annotated"
 
 file_names = glob.glob("./output/images/*")
-print("file_names:",*file_names)
-sample_id = np.random.choice(len(file_names), size=1,replace=False)
-print("sample_id:",str(sample_id))
+# print("file_names:",*file_names)
+print("fileNum:",str(len(file_names)))
 
-im_id = file_names[ sample_id[0] ].split("/")[-1].split(".")[0].lstrip("images\\")
-print("im_id",im_id)
-im = cv2.imread("./output/images/%s.jpg" % (im_id))
-(im_h, im_w) = im.shape[:2] # imがNoneTypeの時がある。
+i = 0
+imgNum = 0
+while i < sample:
+
+    sample_id = np.random.choice(len(file_names), size=1,replace=False)
+
+    im_id = file_names[ sample_id[0] ].split("/")[-1].split(".")[0].lstrip("images\\")
+    print("im_id",im_id)
+    im = cv2.imread("./output/images/%s.jpg" % (im_id))
+
+    if im is None:
+        print("Skip by no image.")
+    else:
+        i = i + 1
+        (im_h, im_w) = im.shape[:2] # imがNoneTypeの時がある。
 
 
-in_file = open("./output/labels/%s.txt" % (im_id))
-(label, x, y, w, h) = in_file.readline().split()
-x = float(x) * im_w
-y = float(y) * im_h
-w = float(w) * im_w
-h = float(h) * im_h
+        in_file = open("./output/labels/%s.txt" % (im_id))
+        (label, x, y, w, h) = in_file.readline().split()
+        x = float(x) * im_w
+        y = float(y) * im_h
+        w = float(w) * im_w
+        h = float(h) * im_h
 
-half_w = w / 2
-half_h = h / 2
-cv2.rectangle(im, (int(x-half_w), int(y-half_h)), (int(x+half_w), int(y+half_h)), (255, 0, 0), 5)
+        half_w = w / 2
+        half_h = h / 2
+        cv2.rectangle(im, (int(x-half_w), int(y-half_h)), (int(x+half_w), int(y+half_h)), (255, 0, 0), 5)
 
-# アノテーション画像を出力する？？
-#result = cv2.imwrite(image_path, im)
-result = cv2.imwrite( output_path + "/" + im_id +".jpg", im)
+        # アノテーション画像を出力する
+        #result = cv2.imwrite(image_path, im)
+        export_path = output_path + "/" + im_id +".jpg"
+        is_file = os.path.isfile(export_path)
+        if is_file:
+            print("The file exsist.")
+            i = i - 1
+        else:
+            result = cv2.imwrite( export_path , im)
+            imgNum = imgNum + 1
+            print("New Image Generated.")
 
-print(result)
+        
+
+
+print("imgNum:",str(imgNum))
+print("******END annotationTest.py*****")
 # ウインドウ出力
 # cv2.imshow("window", im)
 # cv2.waitKey()
