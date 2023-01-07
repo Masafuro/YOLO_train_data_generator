@@ -20,25 +20,17 @@
 で10回ループさせるの意味
 
 最後に稼働結果を出力
-> loop:ループ数
-> label:ラベル数
-> genImg:生成画像数
-> maxRam:最大使用メモリ量
-> genTime:生成にかかった時間
+- loop:ループ数
+- label:ラベル数
+- genImg:生成画像数
+- maxRam:最大使用メモリ量
+- genTime:生成にかかった時間
 
 #### fielFinder.py
 trimmedフォルダからラベルフォルダごとに画像アドレスを取得する。
 > --importInfo
 を指定した場合、取得した画像一覧をコンソールに表示する。
 generate_sample.pyに組み込み済みの副産物
-
-最後に出力状況を表示
-> loop:ループ数
-> label:ラベル数
-> genImg:生成画像数
-> maxRam:使用した最大メモリ量
-> genTime:生成にかかった時間
-
 
 
 ## フォルダ構造
