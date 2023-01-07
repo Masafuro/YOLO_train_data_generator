@@ -5,16 +5,24 @@ import numpy as np
 from PIL import Image
 import argparse
 import psutil
+
 import math
+import pathlib
+from tabulate import tabulate
+
+
+
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--loop")
+parser.add_argument("--importInfo", help="optional", action="store_true")
+args = parser.parse_args()
+
 args = parser.parse_args()
 skip_pad = False
 
 # src_imageの背景画像に対して、overlay_imageのalpha画像を貼り付ける。pos_xとpos_yは貼り付け時の左上の座標
 def overlay(src_image, overlay_image, pos_x, pos_y):
-    print("def overlay.")
     if skip_pad == False:
         # オーバレイ画像のサイズを取得
         ol_height, ol_width = overlay_image.shape[:2]
@@ -45,7 +53,6 @@ def overlay(src_image, overlay_image, pos_x, pos_y):
 
 # 画像周辺のパディングを削除
 def delete_pad(image):
-    print("type(image):",type(image))
     
     if image is None:
         mask = None
@@ -71,14 +78,12 @@ def delete_pad(image):
 # 画像を指定した角度だけ回転させる
 def rotate_image(image, angle):
     orig_h, orig_w = image.shape[:2]
-    print("orig_h,orig_w,angle", orig_h, orig_w,angle)
     matrix = cv2.getRotationMatrix2D((math.ceil(orig_h/2), math.ceil(orig_w/2) ), angle, 1.0)
     return cv2.warpAffine(image, matrix, (orig_h, orig_w))
 
 # 画像をスケーリングする
 def scale_image(image, scale):
     orig_h, orig_w = image.shape[:2]
-    print("int(orig_w*scale), int(orig_h*scale):",int(orig_w*scale), int(orig_h*scale))
     return cv2.resize(image, (int(math.ceil(orig_w*scale)), int(math.ceil(orig_h*scale))))
 
 # 背景画像から、指定したhとwの大きさの領域をランダムで切り抜く
@@ -95,10 +100,8 @@ def random_rotate_scale_image(image):
         return None
     else:
         angle = np.random.randint(360)
-        scale = round( 0.1 + np.random.rand() * 2, 1)
-        print("angle,scale:",angle,scale)
+        scale = round( 0.5 + np.random.rand() * 1.5, 1)
         orig_h, orig_w = image.shape[:2]
-        print("orig_h, orig_w:",orig_h, orig_w)
         if orig_h > 0 and orig_w > 0:
             image = rotate_image(image, angle)
             # image = scale_image(image, 1 + np.random.rand() * 2) # 1 ~ 3倍
@@ -136,7 +139,6 @@ def random_overlay_image(src_image, overlay_image,w,h):
             y = 0
             bbox = ((0, 0), (1, 1))
             skip_pad = True
-        print("x,y,oh,ow,rh,rw:",x,y,oh,ow,rh,rw)
         return overlay(src_image, overlay_image, x, y), bbox
 
 # 4点座標のbboxをyoloフォーマットに変換
@@ -149,16 +151,6 @@ def yolo_format_bbox(image, bbox):
     return(center_x, center_y, w, h)
 
 def fileFinder():
-    import os
-    import pathlib
-    from tabulate import tabulate
-
-    import argparse
-    parser = argparse.ArgumentParser()
-
-    # "--info" 指定でインポートした画像をprintで出力
-    parser.add_argument("--importInfo", help="optional", action="store_true")
-    args = parser.parse_args()
 
     print("\n")
     print("START fileFinder.py")
@@ -207,12 +199,11 @@ output_path = "./output"
 input_path = "trimmed"
 background_path = "background"
 
-print("output_path:" + output_path + ":EXIST:" + str(os.path.exists(output_path)) )
+# print("output_path:" + output_path + ":EXIST:" + str(os.path.exists(output_path)) )
 # input_path = "orig_images"
 input_glob = input_path + "/*"
 # fruit_files = glob.glob( input_glob )
 fruit_files = glob.glob( input_glob )
-print("fruit_files:", fruit_files)
 # ここで画像をとりそこねている。
 
 
@@ -288,7 +279,7 @@ for k in range(loop):
             if skip_pad == False:
                 # 画像ファイルを保存
                 # image_path = "%s/images/train_%s_%s.jpg" % (base_path, i, labels[class_id])
-                image_path = "%s/images/train_%s_%s.jpg" % (output_path, i, labels[class_id])
+                image_path = "%s/images/%s_%s_%s.jpg" % (output_path,labels[j], k,i )
                 cv2.imwrite(image_path, result)
 
                 # 画像ファイルのパスを追記
@@ -298,7 +289,7 @@ for k in range(loop):
                 # ラベルファイルを保存
                 # label_path = "%s/labels/train_%s_%s.txt" % (base_path, i, labels[class_id]) 
                 # label_path = "%s\\labels\\train_%s_%s.txt" % (base_path, i, labels[class_id])
-                label_path = "./output/labels/train_%s_%s.txt" % (i, labels[class_id])
+                label_path = "%s/labels/%s_%s_%s.txt" % (output_path, labels[j],k,i)
                 f = open(label_path, 'w')
                 f.write('')  # 何も書き込まなくてファイルは作成されました
                 f.close()
