@@ -54,7 +54,8 @@ generate_sample.pyに組み込み済みの副産物
 │  ├─output：最終出力先
 │  │  ├─images：合成された画像の出力先
 │  │  └─labels：生成されたラベルの出力先
-│  └─trimmed：グリーンバック画像をトリミングした画像を保管する場所
+│  └─trimmed：グリーンバック画像をトリミングした画像を保存する場所
+│  └─annotated：output/images内からアノテーションテストをした画像が保存される場所
 </pre>
 
 
