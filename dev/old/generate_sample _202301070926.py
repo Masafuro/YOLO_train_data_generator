@@ -178,20 +178,14 @@ def fileFinder():
     print("\n*************************\n")
 
     object_path ="./trimmed"
-    bachground_path ="./background"
 
     files = os.listdir( object_path )
     files_dir = [f for f in files if os.path.isdir(os.path.join( object_path , f))]
     labels = files_dir
     print("labels:", labels)
 
-    bfiles = glob.glob("./background/*.jpg")
-    print(bfiles)
-    print("backgroundImageNum:"+str(len(bfiles)))
-
     maxFileNum = 0
     maxLabelNum = len(labels)
-    
 
     # ラベルフォルダからの画像取得
     for w in labels:
@@ -218,12 +212,13 @@ def fileFinder():
 
     print("\n*************************\n")
     print("END fileFinder.py")
-    return img_array, labels, maxFileNum, bfiles
+    return img_array, labels, maxFileNum
 
     # print(img_array[3][1]) #img_array チェック用
 
 output_path = "./output"
 input_path = "trimmed"
+background_path = "background"
 
 # print("output_path:" + output_path + ":EXIST:" + str(os.path.exists(output_path)) )
 # input_path = "orig_images"
@@ -243,12 +238,10 @@ for fruit_file in fruit_files:
     fruits.append(cv2.imread(fruit_file, cv2.IMREAD_UNCHANGED))
 '''
 
-fruits, labels, maxFileNum, backImg = fileFinder()
-print("backImg:")
-print(backImg)
+fruits, labels, maxFileNum = fileFinder()
+
 # imgData = [[0 for i in range( maxFileNum )] for j in range( len(labels) )] #配列[ラベル数][最大ファイル数]を宣言
 imgData = [[0 for i in range( maxFileNum )] for j in range( len(labels) )]
-
 
 for j in range( len(labels) ):
     for i in range( len(fruits[j]) ):
@@ -264,10 +257,15 @@ for fruit_file in fruit_files:
     fruits.append(cv2.imread(fruit_file, cv2.IMREAD_UNCHANGED))
 '''
 
+background_image = cv2.imread(background_path + "/background.jpg")
+height, width, channels = background_image.shape[:3]
+print("height:", height,":width:",width,":channels:",channels)
 # write label file
 with open("label.txt", "w") as f:
     for label in labels:
         f.write("%s\n" % (label))
+
+background_height, background_width = (height, width)
 
 if args.loop:
     # --loop オプションから引数をゲット
@@ -288,12 +286,6 @@ for k in range(loop):
             if maxRam < mem.used :
                 maxRam = mem.used
             print("MEM:",mem.percent, end=":")
-            
-            bgImgNo = np.random.randint(len(backImg))
-            background_image = cv2.imread(backImg[bgImgNo])
-            height, width, channels = background_image.shape[:3]
-            background_height, background_width = (height, width)
-            print("bgImgNo:",str(bgImgNo))
 
             sampled_background = random_sampling(background_image, background_height, background_width)
             class_id = np.random.randint(len(labels))
