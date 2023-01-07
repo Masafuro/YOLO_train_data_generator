@@ -3,7 +3,9 @@ import glob
 import argparse
 import numpy as np
 import os
+import random
 
+random.seed(0)
 print("******START annotationTest.py*****")
 
 parser = argparse.ArgumentParser()
@@ -22,15 +24,13 @@ output_path = "./annotated"
 
 file_names = glob.glob("./output/images/*")
 # print("file_names:",*file_names)
-print("fileNum:",str(len(file_names)))
+randomFileNames = random.sample(file_names, sample)
 
 i = 0
 imgNum = 0
-while i < sample:
+for i in range(len(randomFileNames)):
 
-    sample_id = np.random.choice(len(file_names), size=1,replace=False)
-
-    im_id = file_names[ sample_id[0] ].split("/")[-1].split(".")[0].lstrip("images\\")
+    im_id = randomFileNames[i].split("/")[-1].split(".")[0].lstrip("images\\")
     print("im_id",im_id)
     im = cv2.imread("./output/images/%s.jpg" % (im_id))
 
