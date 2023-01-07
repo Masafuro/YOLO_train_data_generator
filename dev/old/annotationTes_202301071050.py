@@ -1,7 +1,6 @@
 import cv2
 import glob
 import argparse
-import numpy as np
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--sample")
@@ -19,14 +18,10 @@ output_path = "./annotated"
 
 file_names = glob.glob("./output/images/*")
 print("file_names:",*file_names)
-sample_id = np.random.choice(len(file_names), size=1,replace=False)
-print("sample_id:",str(sample_id))
-
-im_id = file_names[ sample_id[0] ].split("/")[-1].split(".")[0].lstrip("images\\")
+im_id = file_names[0].split("/")[-1].split(".")[0].lstrip("images\\")
 print("im_id",im_id)
 im = cv2.imread("./output/images/%s.jpg" % (im_id))
-(im_h, im_w) = im.shape[:2] # imがNoneTypeの時がある。
-
+(im_h, im_w) = im.shape[:2]
 
 in_file = open("./output/labels/%s.txt" % (im_id))
 (label, x, y, w, h) = in_file.readline().split()
@@ -37,7 +32,7 @@ h = float(h) * im_h
 
 half_w = w / 2
 half_h = h / 2
-cv2.rectangle(im, (int(x-half_w), int(y-half_h)), (int(x+half_w), int(y+half_h)), (255, 0, 0), 5)
+cv2.rectangle(im, (int(x-half_w), int(y-half_h)), (int(x+half_w), int(y+half_h)), (0, 0, 255), 1)
 
 # アノテーション画像を出力する？？
 #result = cv2.imwrite(image_path, im)
