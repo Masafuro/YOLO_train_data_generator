@@ -11,13 +11,11 @@ import pathlib
 from tabulate import tabulate
 import time
 
-
 parser = argparse.ArgumentParser()
 parser.add_argument("--loop")
 parser.add_argument("--importInfo", help="optional", action="store_true")
 args = parser.parse_args()
 
-args = parser.parse_args()
 skip_pad = False
 
 def convertTime(seconds):

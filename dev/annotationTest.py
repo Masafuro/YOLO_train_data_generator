@@ -1,5 +1,20 @@
 import cv2
 import glob
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--sample")
+parser.add_argument("--all", help="optional", action="store_true")
+args = parser.parse_args()
+
+# サンプリング数を取得　デフォルトは10
+if args.sample:
+    # --loop オプションから引数をゲット
+    sample = int(args.sample)
+else:
+    sample = 10
+
+output_path = "./annotated"
 
 file_names = glob.glob("./output/images/*")
 print("file_names:",*file_names)
@@ -20,6 +35,10 @@ half_h = h / 2
 cv2.rectangle(im, (int(x-half_w), int(y-half_h)), (int(x+half_w), int(y+half_h)), (0, 0, 255), 1)
 
 # アノテーション画像を出力する？？
+#result = cv2.imwrite(image_path, im)
+result = cv2.imwrite( output_path + "/" + im_id +".jpg", im)
 
-cv2.imshow("window", im)
-cv2.waitKey()
+print(result)
+# ウインドウ出力
+# cv2.imshow("window", im)
+# cv2.waitKey()
