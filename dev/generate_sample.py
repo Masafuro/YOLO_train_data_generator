@@ -9,8 +9,7 @@ import psutil
 import math
 import pathlib
 from tabulate import tabulate
-
-
+import time
 
 
 parser = argparse.ArgumentParser()
@@ -20,6 +19,28 @@ args = parser.parse_args()
 
 args = parser.parse_args()
 skip_pad = False
+
+def convertTime(seconds):
+    # https://imagingsolution.net/program/python/python-basic/elapsed_time_hhmmss/
+    """秒をhh:mm:ss形式の文字列で返す
+
+    Parameters
+    ----------
+    seconds : float
+        表示する秒数
+
+    Returns
+    -------
+    str
+        hh:mm:ss形式の文字列
+    """
+    seconds = int(seconds + 0.5)    # 秒数を四捨五入
+    h = seconds // 3600             # 時の取得
+    m = (seconds - h * 3600) // 60  # 分の取得
+    s = seconds - h * 3600 - m * 60 # 秒の取得
+
+    return f"{h:02}:{m:02}:{s:02}"  # hh:mm:ss形式の文字列で返す
+
 
 # src_imageの背景画像に対して、overlay_imageのalpha画像を貼り付ける。pos_xとpos_yは貼り付け時の左上の座標
 def overlay(src_image, overlay_image, pos_x, pos_y):
@@ -218,8 +239,6 @@ for fruit_file in fruit_files:
 '''
 
 fruits, labels, maxFileNum = fileFinder()
-print("labels:")
-print(labels)
 
 # imgData = [[0 for i in range( maxFileNum )] for j in range( len(labels) )] #配列[ラベル数][最大ファイル数]を宣言
 imgData = [[0 for i in range( maxFileNum )] for j in range( len(labels) )]
@@ -254,18 +273,23 @@ if args.loop:
 else:
     loop = 10
 
-
+generateImgNum = 0
+maxRam = 0
+GB = 1024*1024*1024
+time_sta = time.time()
 # train用の画像生成
 for k in range(loop):
     for j in range( len(labels) ):
         for i in range( len(fruits[j]) ):
             # メモリ使用率を取得
-            mem = psutil.virtual_memory() 
+            mem = psutil.virtual_memory()
+            if maxRam < mem.used :
+                maxRam = mem.used
             print("MEM:",mem.percent, end=":")
 
             sampled_background = random_sampling(background_image, background_height, background_width)
             class_id = np.random.randint(len(labels))
-            print("fruits[j][i]:",fruits[j][i])
+            print("ImportImage:",fruits[j][i])
             if fruits[j][i]:
                 imgData[j][i] = random_rotate_scale_image( imgData[j][i] )
                 result, bbox = random_overlay_image(sampled_background, imgData[j][i], width, height)
@@ -285,6 +309,7 @@ for k in range(loop):
                 # 画像ファイルのパスを追記
                 with open("train.txt", "a") as f:
                     f.write("%s\n" % (image_path))
+                generateImgNum = generateImgNum + 1
 
                 # ラベルファイルを保存
                 # label_path = "%s/labels/train_%s_%s.txt" % (base_path, i, labels[class_id]) 
@@ -301,8 +326,18 @@ for k in range(loop):
                 skip_pad = False
                 i = i-1
 
+time_end = time.time()
+workTime = time_end - time_sta
 
-print("**************I'm now here.****************")
+data = {'loop': [k+1],
+        'label': [j+1],
+        'genImg': [generateImgNum],
+        'maxRam':[ str(round(maxRam/GB,1)) + "GB" ],
+        'genTime':[convertTime(workTime)]
+        }
+print(tabulate(data, headers='keys'))
+
+print("**************finish.****************")
 
 ''' # 一旦テスト用画像生成は廃止。
 # test用の画像生成
