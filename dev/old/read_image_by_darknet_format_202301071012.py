@@ -19,7 +19,5 @@ half_w = w / 2
 half_h = h / 2
 cv2.rectangle(im, (int(x-half_w), int(y-half_h)), (int(x+half_w), int(y+half_h)), (0, 0, 255), 1)
 
-# アノテーション画像を出力する？？
-
 cv2.imshow("window", im)
 cv2.waitKey()
