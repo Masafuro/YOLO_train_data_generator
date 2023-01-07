@@ -21,6 +21,9 @@
 
 ### プログラム
 
+#### deleteGreenback.py
+実行するとobjectフォルダのグリーンバック画像からグリーンバック背景を削除した画像をtrimmedフォルダに出力する。
+
 #### generate_sample.py
 オプション
 > --loop 10
