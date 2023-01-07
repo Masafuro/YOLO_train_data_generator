@@ -37,8 +37,8 @@ for j in range(len(files_dir)):
         img = cv2.imread( img_file_name , -1)
         imgA = cv2.cvtColor(img, cv2.COLOR_BGR2BGRA)
         hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-        mask = cv2.inRange(hsv, (60, 50,50), (86, 255, 255))
-        ksize=15
+        mask = cv2.inRange(hsv, (40, 50,50), (86, 255, 255)) #H180 S255 V255 H78~160 Default60:50:50-86:255:255        ksize=15
+        ksize = 15
         mask = cv2.medianBlur(mask,ksize)
         img2 = cv2.bitwise_not(imgA, imgA, mask=mask)
         
