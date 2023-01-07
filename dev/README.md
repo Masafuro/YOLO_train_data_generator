@@ -101,6 +101,11 @@ pathlib : python >= 3.4
 PILのインストール
 > pip install pillow
 
+コマンドプロンプトの簡易編集モード
+> オフにする
+> https://tsurezure.info/arbitrage/index.php/2020/05/24/post-506/
+
+
 # memo
 - [pythonで引数指定](https://qiita.com/stkdev/items/e262dada7b68ea91aa0c)
 - [pythonでフォルダ内画像の一括処理](https://zenn.dev/k_neko3/articles/8b89b0ab1c29f8)
