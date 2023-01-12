@@ -11,7 +11,6 @@ import pathlib
 from tabulate import tabulate
 import time
 import gc
-import tkinter.filedialog
 
 
 parser = argparse.ArgumentParser()
@@ -225,23 +224,7 @@ def print_varsize():
         elif hasattr(v, '__len__') and not k.startswith('_') and not isinstance(v,types.ModuleType):
             print("{}{: >15}{}{: >10}{}".format('|',k,'|',str(len(v)),'|'))
 
-
-
-ret = tkinter.filedialog.askdirectory()
-output_path = ret
-
-SAMPLE_DIR = ret + "\images"
-if not os.path.exists(SAMPLE_DIR):
-    # ディレクトリが存在しない場合、ディレクトリを作成する
-    os.makedirs(SAMPLE_DIR)
-
-SAMPLE_DIR = ret + "\labels"
-if not os.path.exists(SAMPLE_DIR):
-    # ディレクトリが存在しない場合、ディレクトリを作成する
-    os.makedirs(SAMPLE_DIR)
-
-
-# output_path = "./output"
+output_path = "./output"
 input_path = "trimmed"
 
 # print("output_path:" + output_path + ":EXIST:" + str(os.path.exists(output_path)) )

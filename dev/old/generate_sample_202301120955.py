@@ -10,9 +10,6 @@ import math
 import pathlib
 from tabulate import tabulate
 import time
-import gc
-import tkinter.filedialog
-
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--loop")
@@ -21,9 +18,20 @@ args = parser.parse_args()
 
 skip_pad = False
 
-
 def convertTime(seconds):
     # https://imagingsolution.net/program/python/python-basic/elapsed_time_hhmmss/
+    """秒をhh:mm:ss形式の文字列で返す
+
+    Parameters
+    ----------
+    seconds : float
+        表示する秒数
+
+    Returns
+    -------
+    str
+        hh:mm:ss形式の文字列
+    """
     seconds = int(seconds + 0.5)    # 秒数を四捨五入
     h = seconds // 3600             # 時の取得
     m = (seconds - h * 3600) // 60  # 分の取得
@@ -34,8 +42,6 @@ def convertTime(seconds):
 
 # src_imageの背景画像に対して、overlay_imageのalpha画像を貼り付ける。pos_xとpos_yは貼り付け時の左上の座標
 def overlay(src_image, overlay_image, pos_x, pos_y):
-    print("overlay",type(src_image),type(overlay_image),)
-
     if skip_pad == False:
         # オーバレイ画像のサイズを取得
         ol_height, ol_width = overlay_image.shape[:2]
@@ -66,7 +72,7 @@ def overlay(src_image, overlay_image, pos_x, pos_y):
 
 # 画像周辺のパディングを削除
 def delete_pad(image):
-    print("delete_pad",type(image))
+    
     if image is None:
         mask = None
         (min_y, min_x) = (1, 1)
@@ -84,7 +90,7 @@ def delete_pad(image):
             (max_y, max_x) = (2, 2)
             global skip_pad
             skip_pad = True
-        
+
         return image[min_y:max_y, min_x:max_x]
     
 
@@ -113,10 +119,9 @@ def random_rotate_scale_image(image):
         return None
     else:
         angle = np.random.randint(360)
-        scale = round( 0.5 + np.random.rand() * 1.0, 1)
+        scale = round( 0.5 + np.random.rand() * 1.5, 1)
         orig_h, orig_w = image.shape[:2]
         if orig_h > 0 and orig_w > 0:
-            print("scale:",scale,"angle:",angle)
             image = rotate_image(image, angle)
             # image = scale_image(image, 1 + np.random.rand() * 2) # 1 ~ 3倍
             image = scale_image(image, scale) # 1/10 ~ 2倍
@@ -215,33 +220,7 @@ def fileFinder():
 
     # print(img_array[3][1]) #img_array チェック用
 
-def print_varsize():
-    import types
-    print("{}{: >15}{}{: >10}{}".format('|','Variable Name','|','  Size','|'))
-    print(" -------------------------- ")
-    for k, v in globals().items():
-        if hasattr(v, 'size') and not k.startswith('_') and not isinstance(v,types.ModuleType):
-            print("{}{: >15}{}{: >10}{}".format('|',k,'|',str(v.size),'|'))
-        elif hasattr(v, '__len__') and not k.startswith('_') and not isinstance(v,types.ModuleType):
-            print("{}{: >15}{}{: >10}{}".format('|',k,'|',str(len(v)),'|'))
-
-
-
-ret = tkinter.filedialog.askdirectory()
-output_path = ret
-
-SAMPLE_DIR = ret + "\images"
-if not os.path.exists(SAMPLE_DIR):
-    # ディレクトリが存在しない場合、ディレクトリを作成する
-    os.makedirs(SAMPLE_DIR)
-
-SAMPLE_DIR = ret + "\labels"
-if not os.path.exists(SAMPLE_DIR):
-    # ディレクトリが存在しない場合、ディレクトリを作成する
-    os.makedirs(SAMPLE_DIR)
-
-
-# output_path = "./output"
+output_path = "./output"
 input_path = "trimmed"
 
 # print("output_path:" + output_path + ":EXIST:" + str(os.path.exists(output_path)) )
@@ -274,7 +253,6 @@ for j in range( len(labels) ):
         print( j,",",i, end=":")
         print(fruits[j][i])
         imgData[j][i] = cv2.imread(str(fruits[j][i]), cv2.IMREAD_UNCHANGED)
-        print(type(imgData[j][i]))
 
 '''
 for fruit_file in fruit_files:
@@ -300,26 +278,14 @@ maxRam = 0
 GB = 1024*1024*1024
 time_sta = time.time()
 # train用の画像生成
-
-k = 0
-j = 0
-i = 0
-n = 0
-print(":loop:",loop,"len(labels):",len(labels),"len(fruits[0]):",len(fruits[0]))
-object_image = imgData[0][0]
-
-while k < loop:
-    # print_varsize()
-
-    while j < len(labels) :
-        while i < len(fruits[j]) :
+for k in range(loop):
+    for j in range( len(labels) ):
+        for i in range( len(fruits[j]) ):
             # メモリ使用率を取得
-            print("i START:skip_pad:",skip_pad)
             mem = psutil.virtual_memory()
             if maxRam < mem.used :
                 maxRam = mem.used
             print("MEM:",mem.percent, end=":")
-            print(":k:",k,":j:",j,":i:",i)
             
             bgImgNo = np.random.randint(len(backImg))
             background_image = cv2.imread(backImg[bgImgNo])
@@ -328,21 +294,14 @@ while k < loop:
             print("bgImgNo:",str(bgImgNo))
 
             sampled_background = random_sampling(background_image, background_height, background_width)
-            # class_id = np.random.randint(len(labels))
+            class_id = np.random.randint(len(labels))
             print("ImportImage:",fruits[j][i])
-            skip_pad = False
-
             if fruits[j][i]:
-                print("START random_rotate_scale_image",type(imgData[j][i]))
-                # imgData[j][i] = random_rotate_scale_image( imgData[j][i] )
-                object_image = random_rotate_scale_image( imgData[j][i] )
-                print("START random_overlay_image")
-                # result, bbox = random_overlay_image(sampled_background, imgData[j][i], width, height)
-                result, bbox = random_overlay_image(sampled_background, object_image, width, height)
+                imgData[j][i] = random_rotate_scale_image( imgData[j][i] )
+                result, bbox = random_overlay_image(sampled_background, imgData[j][i], width, height)
             else:
                 skip_pad == True
                 print("no data.")
-
             if skip_pad == False:
                 yolo_bbox = yolo_format_bbox(result, bbox)
                 print(k,j,i,":",yolo_bbox)
@@ -352,7 +311,6 @@ while k < loop:
                 # image_path = "%s/images/train_%s_%s.jpg" % (base_path, i, labels[class_id])
                 image_path = "%s/images/%s_%s_%s.jpg" % (output_path,labels[j], k,i )
                 cv2.imwrite(image_path, result)
-                print("EXPORT:",image_path)
 
                 # 画像ファイルのパスを追記
                 with open("train.txt", "a") as f:
@@ -368,30 +326,11 @@ while k < loop:
                 f.close()
         
                 with open(label_path, "w") as f:
-                #    f.write("%s %s %s %s %s" % (class_id, yolo_bbox[0], yolo_bbox[1], yolo_bbox[2], yolo_bbox[3]))
-                    f.write("%s %s %s %s %s" % (j, yolo_bbox[0], yolo_bbox[1], yolo_bbox[2], yolo_bbox[3]))
-                
-
-                i = i + 1
-
+                    f.write("%s %s %s %s %s" % (class_id, yolo_bbox[0], yolo_bbox[1], yolo_bbox[2], yolo_bbox[3]))
             else:
                 print("Skippped frame")
-                
-
-            del background_image
-            del sampled_background
-            del result
-            del object_image
-            gc.collect()
-            skip_pad = False
-            # object_image = imgData[0][0]
-
-        
-        j = j + 1
-        i = 0
-    k = k + 1
-    j = 0
-    i = 0
+                skip_pad = False
+                i = i-1
 
 time_end = time.time()
 workTime = time_end - time_sta

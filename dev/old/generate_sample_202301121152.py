@@ -11,7 +11,6 @@ import pathlib
 from tabulate import tabulate
 import time
 import gc
-import tkinter.filedialog
 
 
 parser = argparse.ArgumentParser()
@@ -24,6 +23,18 @@ skip_pad = False
 
 def convertTime(seconds):
     # https://imagingsolution.net/program/python/python-basic/elapsed_time_hhmmss/
+    """秒をhh:mm:ss形式の文字列で返す
+
+    Parameters
+    ----------
+    seconds : float
+        表示する秒数
+
+    Returns
+    -------
+    str
+        hh:mm:ss形式の文字列
+    """
     seconds = int(seconds + 0.5)    # 秒数を四捨五入
     h = seconds // 3600             # 時の取得
     m = (seconds - h * 3600) // 60  # 分の取得
@@ -225,23 +236,7 @@ def print_varsize():
         elif hasattr(v, '__len__') and not k.startswith('_') and not isinstance(v,types.ModuleType):
             print("{}{: >15}{}{: >10}{}".format('|',k,'|',str(len(v)),'|'))
 
-
-
-ret = tkinter.filedialog.askdirectory()
-output_path = ret
-
-SAMPLE_DIR = ret + "\images"
-if not os.path.exists(SAMPLE_DIR):
-    # ディレクトリが存在しない場合、ディレクトリを作成する
-    os.makedirs(SAMPLE_DIR)
-
-SAMPLE_DIR = ret + "\labels"
-if not os.path.exists(SAMPLE_DIR):
-    # ディレクトリが存在しない場合、ディレクトリを作成する
-    os.makedirs(SAMPLE_DIR)
-
-
-# output_path = "./output"
+output_path = "./output"
 input_path = "trimmed"
 
 # print("output_path:" + output_path + ":EXIST:" + str(os.path.exists(output_path)) )
@@ -274,7 +269,6 @@ for j in range( len(labels) ):
         print( j,",",i, end=":")
         print(fruits[j][i])
         imgData[j][i] = cv2.imread(str(fruits[j][i]), cv2.IMREAD_UNCHANGED)
-        print(type(imgData[j][i]))
 
 '''
 for fruit_file in fruit_files:
@@ -306,7 +300,6 @@ j = 0
 i = 0
 n = 0
 print(":loop:",loop,"len(labels):",len(labels),"len(fruits[0]):",len(fruits[0]))
-object_image = imgData[0][0]
 
 while k < loop:
     # print_varsize()
@@ -314,7 +307,6 @@ while k < loop:
     while j < len(labels) :
         while i < len(fruits[j]) :
             # メモリ使用率を取得
-            print("i START:skip_pad:",skip_pad)
             mem = psutil.virtual_memory()
             if maxRam < mem.used :
                 maxRam = mem.used
@@ -333,16 +325,11 @@ while k < loop:
             skip_pad = False
 
             if fruits[j][i]:
-                print("START random_rotate_scale_image",type(imgData[j][i]))
-                # imgData[j][i] = random_rotate_scale_image( imgData[j][i] )
-                object_image = random_rotate_scale_image( imgData[j][i] )
-                print("START random_overlay_image")
-                # result, bbox = random_overlay_image(sampled_background, imgData[j][i], width, height)
-                result, bbox = random_overlay_image(sampled_background, object_image, width, height)
+                imgData[j][i] = random_rotate_scale_image( imgData[j][i] )
+                result, bbox = random_overlay_image(sampled_background, imgData[j][i], width, height)
             else:
                 skip_pad == True
                 print("no data.")
-
             if skip_pad == False:
                 yolo_bbox = yolo_format_bbox(result, bbox)
                 print(k,j,i,":",yolo_bbox)
@@ -381,11 +368,8 @@ while k < loop:
             del background_image
             del sampled_background
             del result
-            del object_image
             gc.collect()
             skip_pad = False
-            # object_image = imgData[0][0]
-
         
         j = j + 1
         i = 0
