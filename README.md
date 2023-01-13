@@ -1,14 +1,21 @@
-# これはなんですか？
+# これは、グリーンバック背景の画像から自動的に合成画像とYOLO用のアノテーションファイルを生成するスクリプトです。
 
 ## 1. グリーンバック背景の画像を用意します。
 ### 1-1.objectフォルダ下に、ラベル名をつけたフォルダを用意し、そこに画像を入れます。
 ![object_sample](https://user-images.githubusercontent.com/1459353/212318265-0682b154-36fa-4498-bfa2-dfab8cc4af89.jpg)
+
 Image by <a href="https://pixabay.com/users/oslometx-7322944/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=4223871">OsloMetX</a> from <a href="https://pixabay.com//?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=4223871">Pixabay</a>
 
 ## 2.背景画像を用意します。
 ### 2-1. backgroundフォルダに画像を入れます。
 
+![beach-gce58c1176_1280](https://user-images.githubusercontent.com/1459353/212320624-aa5e62b3-9c8d-4485-aab0-8a76c02e0741.jpg)
+
 Image by <a href="https://pixabay.com/users/12019-12019/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=1751455">David Mark</a> from <a href="https://pixabay.com//?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=1751455">Pixabay</a>
+
+
+![sunset-gbe30e5c89_1280](https://user-images.githubusercontent.com/1459353/212320651-dc7d8da0-9efa-453f-ab62-f1255580654b.jpg)
+
 
 Image by <a href="https://pixabay.com/users/stevepb-282134/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=404072">Steve Buissinne</a> from <a href="https://pixabay.com//?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=404072">Pixabay</a>
 
@@ -20,6 +27,7 @@ Image by <a href="https://pixabay.com/users/stevepb-282134/?utm_source=link-attr
 
 ## 4.画像合成のスクリプトを実行します。
 > python generate_sample.py --loop 10
+
 " --loop 10 "のオプションで画像合成のループ数を指定できます。
 
 ### 4-1. 起動時にファイルの保存先が選択できます。
@@ -27,10 +35,12 @@ Image by <a href="https://pixabay.com/users/stevepb-282134/?utm_source=link-attr
 
 ![labelA_0_0](https://user-images.githubusercontent.com/1459353/212319566-a3245505-3818-4389-bf2c-459fb1424323.jpg)
 
+### 4-1.出力されたラベルの例
 > 0 0.34921875 0.6295427901524033 0.2125 0.2977725674091442
 
 ## 5.(オプション) アノテーション確認のスクリプトを実行することもできます。
 > python annotationTest.py --sample 3
+
 "--sample 3"のオプションで何個の確認画像を生成するか指定できます。
 
 ### 5-1.annotatedフォルダに画像が出力されます。
