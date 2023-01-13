@@ -1,3 +1,7 @@
+# これはなんですか？
+Image by <a href="https://pixabay.com/users/oslometx-7322944/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=4223871">OsloMetX</a> from <a href="https://pixabay.com//?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=4223871">Pixabay</a>
+
+
 # YOLO用画像合成スクリプト
 フォーク：[Ieetenkiさん](https://github.com/leetenki/YOLO_train_data_generator)
 をベースにグリーンバックで撮影した画像と背景画像を元に学習用画像とアノテーションを生成するスクリプト
@@ -21,8 +25,7 @@
 </pre>
 
 ## スクリプト
-2023/01/04 現在
-- **目下、開発中でところどころ動いていません。**
+2023/01/13 現在
 - deleteGreenback.py:object画像からグリーンバック背景を除去、トリミングし、物体だけの背景が透過された画像を生成する。
 - generatesample.py:deleteGreenback1.pyで作った画像を背景をランダムに合成し、アノテーションと画像を出力する。
   - '--loop 10' で10回ループさせるのオプションコマンド。数字を変えて任意の回数指定できる。
