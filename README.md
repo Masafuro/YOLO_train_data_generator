@@ -5,23 +5,19 @@
 
 # 使い方
 ## 1. グリーンバック背景の画像を用意します。
-### 1-1.objectフォルダ下に、ラベル名をつけたフォルダを用意し、そこに画像を入れます。
+### 1-1.objectフォルダ下に、<span style="color: red; ">ラベル名をつけたフォルダを用意し、</span> そこに画像を入れます。
+object画像例
 <img src="https://user-images.githubusercontent.com/1459353/212318265-0682b154-36fa-4498-bfa2-dfab8cc4af89.jpg" width="320px" >
 
 Image by <a href="https://pixabay.com/users/oslometx-7322944/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=4223871">OsloMetX</a> from <a href="https://pixabay.com//?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=4223871">Pixabay</a>
 
 ## 2.背景画像を用意します。
 ### 2-1. backgroundフォルダに画像を入れます。
-
+background画像例
 <img src="https://user-images.githubusercontent.com/1459353/212320624-aa5e62b3-9c8d-4485-aab0-8a76c02e0741.jpg" width="320px" >
 
 Image by <a href="https://pixabay.com/users/12019-12019/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=1751455">David Mark</a> from <a href="https://pixabay.com//?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=1751455">Pixabay</a>
 
-
-<img src="https://user-images.githubusercontent.com/1459353/212320651-dc7d8da0-9efa-453f-ab62-f1255580654b.jpg" width="320px" >
-
-
-Image by <a href="https://pixabay.com/users/stevepb-282134/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=404072">Steve Buissinne</a> from <a href="https://pixabay.com//?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=404072">Pixabay</a>
 
 ## 3. グリーンバック背景削除のスクリプトを実行します。
 > python deleteGreenback.py
