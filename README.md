@@ -49,7 +49,7 @@ Image by <a href="https://pixabay.com/users/stevepb-282134/?utm_source=link-attr
 
 <img src="https://user-images.githubusercontent.com/1459353/212319566-a3245505-3818-4389-bf2c-459fb1424323.jpg" width="320px" >
 
-### 4-1.出力されたラベルの例
+### 4-2.出力されたラベルの例
 > 0 0.34921875 0.6295427901524033 0.2125 0.2977725674091442
 
 ## 5.(オプション) アノテーション確認のスクリプトを実行することもできます。
