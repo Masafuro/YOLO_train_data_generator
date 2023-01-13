@@ -79,3 +79,5 @@ Image by <a href="https://pixabay.com/users/stevepb-282134/?utm_source=link-attr
 │  └─trimmed：グリーンバック画像をトリミングした画像を保管する場所
 </pre>
 
+## 環境構築
+anacondaプロンプトの出力ファイル "delgb.yaml"を出力しておきました。インポートすると使えると思います。
