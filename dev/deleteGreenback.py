@@ -57,6 +57,7 @@ category = "."
 files = os.listdir(input_dir_base)
 files_dir = [f for f in files if os.path.isdir(os.path.join(input_dir_base, f))]
 print(files_dir)
+print("label=>",len(files_dir))
 
 for j in range(len(files_dir)):
     category = files_dir[j]
