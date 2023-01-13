@@ -5,7 +5,7 @@
 
 # 使い方
 ## 1. グリーンバック背景の画像を用意します。
-### 1-1.objectフォルダ下に、 <sub> **ラベル名をつけたフォルダを用意し、** </sub> そこに画像を入れます。
+### 1-1.objectフォルダ下に、 **ラベル名をつけたフォルダを用意し、** そこに画像を入れます。
 object画像例
 
 <img src="https://user-images.githubusercontent.com/1459353/212318265-0682b154-36fa-4498-bfa2-dfab8cc4af89.jpg" width="320px" >
