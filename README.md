@@ -22,6 +22,16 @@ Image by <a href="https://pixabay.com/users/stevepb-282134/?utm_source=link-attr
 ## 3. グリーンバック背景削除のスクリプトを実行します。
 > python deleteGreenback.py
 
+削除する色範囲は下記のオプションで指定できます。（HSV系）
+|  オプション  |  意味  | 初期値 |
+| ---- | ---- | ---- |
+|  --hl  |  h下限値  | 40 |
+|  --sl  |  s下限値  | 30 |
+| --vl | v下限値 | 30 |
+|  --hh  |  h上限値  | 90 |
+|  --sh  |  s上限値  | 255 |
+| --vh | v上限値 | 255 |
+
 ### 3-1.trimmedフォルダ下にラベル名のフォルダができて、背景が削除された画像が生成されます。
 ![labelA00000000](https://user-images.githubusercontent.com/1459353/212319114-fca78b22-9b64-4ccf-85a7-a371a93c7e07.png)
 
