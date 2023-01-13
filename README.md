@@ -5,7 +5,7 @@
 
 ## 1. グリーンバック背景の画像を用意します。
 ### 1-1.objectフォルダ下に、ラベル名をつけたフォルダを用意し、そこに画像を入れます。
-< img src="https://user-images.githubusercontent.com/1459353/212318265-0682b154-36fa-4498-bfa2-dfab8cc4af89.jpg" width="320px" >
+<img src="https://user-images.githubusercontent.com/1459353/212318265-0682b154-36fa-4498-bfa2-dfab8cc4af89.jpg" width="320px" >
 
 Image by <a href="https://pixabay.com/users/oslometx-7322944/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=4223871">OsloMetX</a> from <a href="https://pixabay.com//?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=4223871">Pixabay</a>
 
