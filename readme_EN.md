@@ -1,4 +1,6 @@
 # Python Script for automatic image & annotation generation for YOLO
+[日本語readme](https://github.com/Masafuro/YOLO_train_data_generator_ver2/blob/5c6f027ec5f6346b4a75382502607ca75b82aa6b/README.md)
+
 fork from：[Ieetenkiさん](https://github.com/leetenki/YOLO_train_data_generator)
 
 This script that automatically generates a large number of training images and annotations** based on images taken in green background and background images.
