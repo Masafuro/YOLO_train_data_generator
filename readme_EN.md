@@ -38,6 +38,7 @@ The color range to be deleted can be specified with the following options. (HSV 
 
 ### 3-1. A folder with the label name will be created under the TRIMMED folder and an image with the background removed will be generated.
 Image with background removed from generated object image
+
 <img src="https://user-images.githubusercontent.com/1459353/212319114-fca78b22-9b64-4ccf-85a7-a371a93c7e07.png" width="320px" >
 
 ## 4.Runs a script for image composition.
