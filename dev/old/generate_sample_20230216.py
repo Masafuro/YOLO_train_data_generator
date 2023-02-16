@@ -39,10 +39,6 @@ def overlay(src_image, overlay_image, pos_x, pos_y):
     if skip_pad == False:
         # オーバレイ画像のサイズを取得
         ol_height, ol_width = overlay_image.shape[:2]
-        print("ol_width:",ol_width,"px,ol_height",ol_height,"px")
-        if(ol_width < 10 or ol_height < 10):
-            print("ol_size is small.")
-            return None
 
         # OpenCVの画像データをPILに変換
         # BGRAからRGBAへ変換
