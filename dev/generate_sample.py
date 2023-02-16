@@ -49,11 +49,12 @@ def overlay(src_image, overlay_image, pos_x, pos_y):
     if skip_pad == False:
         # オーバレイ画像のサイズを取得
         ol_height, ol_width = overlay_image.shape[:2]
-        print("ol_width:",ol_width,"px,ol_height",ol_height,"px")
-        if(ol_width < minSize or ol_height < minSize):
-            print("ol_size is small.")
-            skip_pad = True
-            return None
+        
+        # print("ol_width:",ol_width,"px,ol_height",ol_height,"px")
+        # if(ol_width < minSize or ol_height < minSize):
+        #    print("ol_size is small.")
+        #    skip_pad = True
+        #    return None
 
         # OpenCVの画像データをPILに変換
         # BGRAからRGBAへ変換
@@ -128,7 +129,7 @@ def random_rotate_scale_image(image):
         return None
     else:
         angle = np.random.randint(360)
-        scale = round( 0.5 + np.random.rand() * 1.0, 1)
+        scale = round( 0.5 + np.random.rand() * 2.0, 1)
         orig_h, orig_w = image.shape[:2]
         if orig_h > 0 and orig_w > 0:
             print("scale:",scale,"angle:",angle)
@@ -354,6 +355,7 @@ while k < loop:
                 print("START random_overlay_image")
                 # result, bbox = random_overlay_image(sampled_background, imgData[j][i], width, height)
                 result, bbox = random_overlay_image(sampled_background, object_image, width, height)
+                
             else:
                 skip_pad == True
                 print("no data.")
