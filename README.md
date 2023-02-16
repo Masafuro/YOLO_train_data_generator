@@ -43,9 +43,10 @@ Image by <a href="https://pixabay.com/users/12019-12019/?utm_source=link-attribu
 <img src="https://user-images.githubusercontent.com/1459353/212319114-fca78b22-9b64-4ccf-85a7-a371a93c7e07.png" width="320px" >
 
 ## 4.画像合成のスクリプトを実行します。
-> python generate_sample.py --loop 10
+> python generate_sample.py --loop 10 --minSize 50
 
 " --loop 10 "のオプションで画像合成のループ数を指定できます。
+" --miSize 50 "のオプションで合成する画像の最小サイズを指定できます。最小サイズ以下の場合、スキップされます。デフォルトは10です。
 
 ### 4-1. 起動時にファイルの保存先が選択できます。
 サンプルではoutputフォルダを選択して出力しています。フォルダ内にimagesとlabelsのフォルダが生成されます。imagesには合成画像が、labelsにはyolo形式のラベルが生成されます。
