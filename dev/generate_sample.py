@@ -44,6 +44,7 @@ else:
 # src_imageの背景画像に対して、overlay_imageのalpha画像を貼り付ける。pos_xとpos_yは貼り付け時の左上の座標
 def overlay(src_image, overlay_image, pos_x, pos_y):
     print("overlay",type(src_image),type(overlay_image),)
+    global skip_pad
 
     if skip_pad == False:
         # オーバレイ画像のサイズを取得
@@ -51,6 +52,7 @@ def overlay(src_image, overlay_image, pos_x, pos_y):
         print("ol_width:",ol_width,"px,ol_height",ol_height,"px")
         if(ol_width < minSize or ol_height < minSize):
             print("ol_size is small.")
+            skip_pad = True
             return None
 
         # OpenCVの画像データをPILに変換
@@ -73,7 +75,7 @@ def overlay(src_image, overlay_image, pos_x, pos_y):
         # オリジナルとキャンパスを合成して保存
         result = Image.alpha_composite(src_image_PIL, tmp)
 
-        return  cv2.cvtColor(np.asarray(result), cv2.COLOR_RGBA2BGRA)
+        return cv2.cvtColor(np.asarray(result), cv2.COLOR_RGBA2BGRA)
     else:
         return None
 
