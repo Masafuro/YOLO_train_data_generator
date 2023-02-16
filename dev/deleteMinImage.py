@@ -36,9 +36,8 @@ for file_name in os.listdir(folder_path):
 
         # 画像の幅を取得
         width, height = image.size
-
+        del image
         # 幅が閾値未満の場合は、画像を削除
         if width < min_width or height < min_height:
-            os.close(image.fp)
             os.remove(file_path)
             print(f"Deleted {file_name}")

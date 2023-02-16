@@ -33,11 +33,6 @@ def convertTime(seconds):
     return f"{h:02}:{m:02}:{s:02}"  # hh:mm:ss形式の文字列で返す
 
 
-if args.minSize:
-    # --loop オプションから引数をゲット
-    minSize = int(args.loop)
-else:
-    minSize = 10
 
 
 
@@ -355,7 +350,7 @@ while k < loop:
                 print("START random_overlay_image")
                 # result, bbox = random_overlay_image(sampled_background, imgData[j][i], width, height)
                 result, bbox = random_overlay_image(sampled_background, object_image, width, height)
-                
+
             else:
                 skip_pad == True
                 print("no data.")
