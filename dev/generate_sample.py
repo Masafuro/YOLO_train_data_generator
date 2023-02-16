@@ -16,6 +16,7 @@ import tkinter.filedialog
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--loop")
+parser.add_argument("--minSize")
 parser.add_argument("--importInfo", help="optional", action="store_true")
 args = parser.parse_args()
 
@@ -32,6 +33,14 @@ def convertTime(seconds):
     return f"{h:02}:{m:02}:{s:02}"  # hh:mm:ss形式の文字列で返す
 
 
+if args.minSize:
+    # --loop オプションから引数をゲット
+    minSize = int(args.loop)
+else:
+    minSize = 10
+
+
+
 # src_imageの背景画像に対して、overlay_imageのalpha画像を貼り付ける。pos_xとpos_yは貼り付け時の左上の座標
 def overlay(src_image, overlay_image, pos_x, pos_y):
     print("overlay",type(src_image),type(overlay_image),)
@@ -40,7 +49,7 @@ def overlay(src_image, overlay_image, pos_x, pos_y):
         # オーバレイ画像のサイズを取得
         ol_height, ol_width = overlay_image.shape[:2]
         print("ol_width:",ol_width,"px,ol_height",ol_height,"px")
-        if(ol_width < 10 or ol_height < 10):
+        if(ol_width < minSize or ol_height < minSize):
             print("ol_size is small.")
             return None
 
