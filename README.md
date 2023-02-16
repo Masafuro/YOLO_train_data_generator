@@ -42,6 +42,11 @@ Image by <a href="https://pixabay.com/users/12019-12019/?utm_source=link-attribu
 
 <img src="https://user-images.githubusercontent.com/1459353/212319114-fca78b22-9b64-4ccf-85a7-a371a93c7e07.png" width="320px" >
 
+### 3-2. deleteMinImage.pyの実行（オプション）
+> python deleteMinImage.py
+で10px以下の画像を削除できます。フォルダは選択画面がでるので、この場合、trimmedフォルダを選択すると小さすぎる画像を削除できます。
+
+
 ## 4.画像合成のスクリプトを実行します。
 > python generate_sample.py --loop 10 --minSize 50
 
