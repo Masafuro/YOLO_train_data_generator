@@ -62,6 +62,9 @@ trimmedフォルダからラベルフォルダごとに画像アドレスを取�
 
 generate_sample.pyに組み込み済みの副産物
 
+### crawl_images.py
+オプション --keyword NN --imgsz NN --num_images NN
+画像をDLするスクリプト
 
 ## フォルダ構造
 <pre>

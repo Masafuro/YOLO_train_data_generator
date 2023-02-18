@@ -2,7 +2,8 @@ import cv2
 import os
 import glob
 import numpy as np
-from PIL import Image
+from PIL import Image, ImageEnhance
+import random
 import argparse
 import psutil
 
@@ -59,6 +60,25 @@ def overlay(src_image, overlay_image, pos_x, pos_y):
         #　PILに変換
         src_image_PIL=Image.fromarray(src_image_RGBA)
         overlay_image_PIL=Image.fromarray(overlay_image_RGBA)
+
+        ### overlay_image_PILをランダムに変換
+        # 色味をランダムに変更する
+        color_factor = random.uniform(0.5, 1.5)  # ランダムな色味の強度を定義する
+        brightness_factor = random.uniform(0.5, 1.5)  # ランダムな明るさの強度を定義する
+        contrast_factor = random.uniform(0.5, 1.5)  # ランダムなコントラストの強度を定義する
+        sharpness_factor = 1.0  # シャープさは変更しない
+
+        color_enhancer = ImageEnhance.Color(overlay_image_PIL)
+        overlay_image_PIL = color_enhancer.enhance(color_factor)
+
+        brightness_enhancer = ImageEnhance.Brightness(overlay_image_PIL)
+        overlay_image_PIL = brightness_enhancer.enhance(brightness_factor)
+
+        contrast_enhancer = ImageEnhance.Contrast(overlay_image_PIL)
+        overlay_image_PIL = contrast_enhancer.enhance(contrast_factor)
+
+        sharpness_enhancer = ImageEnhance.Sharpness(overlay_image_PIL)
+        overlay_image_PIL = sharpness_enhancer.enhance(sharpness_factor)
 
         # 合成のため、RGBAモードに変更
         src_image_PIL = src_image_PIL.convert('RGBA')
