@@ -144,13 +144,18 @@ def random_rotate_scale_image(image):
         return None
     else:
         angle = np.random.randint(360)
-        scale = round( 0.5 + np.random.rand() * 2.0, 1)
+        while True:
+            scale = round( 0.01 + np.random.rand() * 1.0, 1)
+            if scale >= 0.05: #5%以上を許可
+                break
+
+        print("scale:",scale,":angle:",angle)
         orig_h, orig_w = image.shape[:2]
         if orig_h > 0 and orig_w > 0:
             print("scale:",scale,"angle:",angle)
             image = rotate_image(image, angle)
             # image = scale_image(image, 1 + np.random.rand() * 2) # 1 ~ 3倍
-            image = scale_image(image, scale) # 1/10 ~ 2倍
+            image = scale_image(image, scale) # 1/10 ~ 1倍
         else:
             skip_pad = True
             image = None

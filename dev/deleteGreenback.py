@@ -15,6 +15,7 @@ parser.add_argument("--hh")
 parser.add_argument("--sh")
 parser.add_argument("--vh")
 
+
 args = parser.parse_args()
 
  # mask = cv2.inRange(hsv, (40, 50,50), (86, 255, 255)) #H180 S255 V255 H78~160 Default60:50:50-86:255:255        ksize=15
@@ -22,28 +23,28 @@ args = parser.parse_args()
 if args.hl:
     hl = int(args.hl)
 else:
-    hl = 40
+    hl = 75
 if args.sl:
     sl = int(args.sl)
 else:
-    sl = 30
+    sl = 50
 if args.vl:
     vl = int(args.vl)
 else:
-    vl = 30
+    vl = 20
 
 if args.hh:
     hh = int(args.hh)
 else:
-    hh = 90
+    hh = 150
 if args.sh:
     sh = int(args.sh)
 else:
-    sh = 255
+    sh = 80
 if args.vh:
     vh = int(args.vh)
 else:
-    vh = 255
+    vh = 60
 
 print("hl:",hl,"_sl:",sl,"_vl:",vl)
 print("hh:",hh,"_sh:",sh,"_vh:",vh)
@@ -63,7 +64,8 @@ for j in range(len(files_dir)):
     category = files_dir[j]
     print("category:",category)
     input_dir = input_dir_base + "\\" + category
-    input_list = list(pathlib.Path(input_dir).glob('**/*.jpg'))
+    # input_list = list(pathlib.Path(input_dir).glob('**/*.jpg'))
+    input_list = list(pathlib.Path(input_dir).glob('**/*.png'))
     output_dir = output_dir_base + "\\" + category
 
     # 出力フォルダにラベルごとのフォルダが存在していなければ作成
@@ -73,6 +75,7 @@ for j in range(len(files_dir)):
     else:
         print("INFO:出力フォルダには",category,"フォルダがすでに存在しています。")
     
+    print("グリーンバック除去開始->",len(input_list))
     for i in range(len(input_list)):
         img_file_name = str(input_list[i])
         print( "IMPORT:",img_file_name )
