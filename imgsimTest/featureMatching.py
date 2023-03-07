@@ -7,6 +7,8 @@
 import cv2
 import os
 import csv
+import datetime
+
 
 IMG_DIR = os.path.abspath(os.path.dirname(__file__)) + '/images/'
 IMG_SIZE = (200, 200)
@@ -31,14 +33,16 @@ def calc_sim(baseFile, compareFile):
     return ret
 
 
-    
-
 extensions = ['.jpg', '.jpeg', '.png', '.gif']
 files = [file for file in os.listdir(IMG_DIR) if os.path.splitext(file)[1].lower() in extensions]
 # files = os.listdir(IMG_DIR)
 print(files)
 
-header = ["AKAZE_dist"]
+# 現在の日付と時刻を取得する
+now = datetime.datetime.now()
+now_str = now.strftime('%Y-%m-%d_%H:%M:%S')
+
+header = ["AKAZEdist_" + now_str]
 data = []
 data_now = []
 
@@ -56,7 +60,7 @@ for file0 in files:
     data.append(data_now)
     data_now = []
 
-with open('example.csv', mode='w', newline='') as file:
+with open('export.csv', mode='w+', newline='') as file:
     writer = csv.writer(file)
     writer.writerow(header)
     for row in data:
