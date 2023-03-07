@@ -1,10 +1,23 @@
 #OpenCVとosをインポート
 import cv2
 import os
+import sys
+
+
  
-TARGET_FILE = "001.png"
+TARGET_FILE = "00001.png"
+TARGET_DIR = "images/"
+# ファイルが存在するかどうかを調べる
+if os.path.isfile(TARGET_DIR + TARGET_FILE):
+    print("TARGETファイルが存在します。")
+else:
+    print("TARGETファイルが存在しません。")
+    # プログラムを終了する
+    sys.exit()
+
+
 # IMG_DIR = os.path.abspath(os.path.dirname(__file__)) + 'images/'
-IMG_DIR = os.path.abspath(os.path.dirname(__file__)) + '/images/'
+IMG_DIR = os.path.abspath(os.path.dirname(__file__)) + '/' + TARGET_DIR
 print(IMG_DIR)
 print(TARGET_FILE)
 IMG_SIZE = (640, 640)
@@ -12,7 +25,7 @@ IMG_SIZE = (640, 640)
 target_img_path = IMG_DIR + TARGET_FILE
 #ターゲット画像をグレースケールで読み出し
 target_img = cv2.imread(target_img_path, cv2.IMREAD_GRAYSCALE)
-#ターゲット画像を200px×200pxに変換
+#ターゲット画像をIMG_SIZEに変換
 target_img = cv2.resize(target_img, IMG_SIZE)
 
 # BFMatcherオブジェクトの生成
@@ -26,7 +39,7 @@ print('TARGET_FILE: %s' % (TARGET_FILE))
 
 files = os.listdir(IMG_DIR)
 for file in files:
-    if file == '.DS_Store' or file == TARGET_FILE:
+    if file == '.DS_Store' or file == ".gitignore" or file == TARGET_FILE:
         continue
     #比較対象の写真の特徴点を検出
     comparing_img_path = IMG_DIR + file
@@ -45,8 +58,9 @@ for file in files:
 
     # print(file, ret)
     # float型の数値を文字列に変換し、小数点を「-」に変換する
-    ret_str = "{:.4f}".format(ret).replace(".", "-")
-    print(file, ret_str)  # 出力結果： 3-1415
+    # ret_str = "{:.4f}".format(ret).replace(".", "-")
+    # print(file, ret_str)  # 出力結果： 3-1415
+    print(file, ret)  # 出力結果： 3-1415
     # ファイル名の変更
     '''
     path, ext = os.path.splitext(comparing_img_path)  # 拡張子を取得する
@@ -56,8 +70,9 @@ for file in files:
     '''
     
     # 新しいファイル名でファイルを保存する
+    '''
     filename = os.path.basename(file)
     ext = os.path.splitext(filename)[1][1:]
     print(ext)
     os.rename("images/" + filename, "images/" + ret_str + "." + ext )
-    
+    '''
