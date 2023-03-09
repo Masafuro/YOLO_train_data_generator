@@ -2,18 +2,23 @@
 > conda activate imgsim
 > cd -> 所定のimgsimTestまで移動
 
+01-featureMatching.pyでtrain画像内の距離総当り表を作成
+02-calcGravity.pyでselectedフォルダ内の画像から、imgsource内の画像への重力距離を計算する。
 
 # 画像の類似度を判別する
 featureMatching.pyでimagesフォルダ内の画像で全ての距離を測定し、export.csvを出力できるようになった。
 
-'''mermaid
+```mermaid
 sequenceDiagram
-    participant A as エージェントA
-    participant B as エージェントB
-    A->>B: リクエスト
-    B-->>A: レスポンス
+    participant A as データ層
+    participant B as 類似度判別スクリプト
+    participant C as 画像整列スクリプト
+    B->>A: リクエスト
+    A-->>B: 画像データ
+    B-->>B: 距離計算
 
-'''
+
+```
 
 
 imagesフォルダに入っている画像
