@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
-# グレースケールマッチング：切粉ではあまり差がでない。
+# ヒスとグラムマッチング：切粉ではあまり差がでない？
 
 """hist matching."""
 
 import cv2
 import os
 
-TARGET_FILE = '00000.png'
+TARGET_FILE = '00001.png'
 IMG_DIR = os.path.abspath(os.path.dirname(__file__)) + '\\images\\'
 IMG_SIZE = (640, 640)
 
@@ -24,13 +24,11 @@ print('TARGET_FILE: %s' % (TARGET_FILE))
 files = os.listdir(IMG_DIR)
 print("files",files)
 for i, file in enumerate(files):
-    print("i",i,"file",file)
     if file == '.DS_Store' or file == TARGET_FILE or file == '.gitignore':
         continue
     else:
         ret = ""
         comparing_img_path = IMG_DIR + file
-        print(file, comparing_img_path)
         comparing_img = cv2.imread(comparing_img_path)
         comparing_img = cv2.resize(comparing_img, IMG_SIZE)
         comparing_hist = cv2.calcHist([comparing_img], [0], None, [256], [0, 256])
