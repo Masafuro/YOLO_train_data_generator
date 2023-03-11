@@ -127,7 +127,7 @@ def rotate_image(image, angle):
 
 # 画像をスケーリングする
 def scale_image(image, scale):
-    orig_h, orig_w = image.shape[:2]
+    orig_h, orig_w = image.shape[:2]    
     return cv2.resize(image, (int(math.ceil(orig_w*scale)), int(math.ceil(orig_h*scale))))
 
 # 背景画像から、指定したhとwの大きさの領域をランダムで切り抜く
@@ -145,12 +145,22 @@ def random_rotate_scale_image(image):
     else:
         angle = np.random.randint(360)
         while True:
-            scale = round( 0.01 + np.random.rand() * 1.0, 1)
-            if scale >= 0.05: #5%以上を許可
+            scale = round( 0.7 + np.random.rand() * 1.5, 1)
+            if scale >= 0.30: #5%以上を許可
                 break
 
         print("scale:",scale,":angle:",angle)
+            ### X,Yせん断
+        '''
         orig_h, orig_w = image.shape[:2]
+        x_shift, y_shift = np.random.randint(-100, 100, 2)
+        theta1 = np.deg2rad(5)
+        theta2 = np.deg2rad(10)
+        mat = np.float32([[1, np.tan(theta1), 0], [np.tan(theta2), 1, 0]])
+        image = cv2.warpAffine(image, mat, (orig_w, orig_h))
+        '''
+        orig_h, orig_w = image.shape[:2]
+
         if orig_h > 0 and orig_w > 0:
             print("scale:",scale,"angle:",angle)
             image = rotate_image(image, angle)
