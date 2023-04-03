@@ -18,6 +18,7 @@ import tkinter.filedialog
 parser = argparse.ArgumentParser()
 parser.add_argument("--loop")
 parser.add_argument("--minSize")
+parser.add_argument("--skipDeletepad")
 parser.add_argument("--importInfo", help="optional", action="store_true")
 args = parser.parse_args()
 
@@ -97,6 +98,7 @@ def overlay(src_image, overlay_image, pos_x, pos_y):
 
 # 画像周辺のパディングを削除
 def delete_pad(image):
+
     print("delete_pad",type(image))
     if image is None:
         mask = None
@@ -145,8 +147,8 @@ def random_rotate_scale_image(image):
     else:
         angle = np.random.randint(360)
         while True:
-            scale = round( 0.7 + np.random.rand() * 1.5, 1)
-            if scale >= 0.30: #5%以上を許可
+            scale = round( 0.01 + np.random.rand() * 1.5, 1)
+            if scale >= 0.05: #5%以上を許可
                 break
 
         print("scale:",scale,":angle:",angle)
