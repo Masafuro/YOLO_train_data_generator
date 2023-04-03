@@ -23,28 +23,28 @@ args = parser.parse_args()
 if args.hl:
     hl = int(args.hl)
 else:
-    hl = 75
+    hl = 30
 if args.sl:
     sl = int(args.sl)
 else:
-    sl = 50
+    sl = 64
 if args.vl:
     vl = int(args.vl)
 else:
-    vl = 20
+    vl = 0
 
 if args.hh:
     hh = int(args.hh)
 else:
-    hh = 150
+    hh = 90
 if args.sh:
     sh = int(args.sh)
 else:
-    sh = 80
+    sh = 255
 if args.vh:
     vh = int(args.vh)
 else:
-    vh = 60
+    vh = 255
 
 print("hl:",hl,"_sl:",sl,"_vl:",vl)
 print("hh:",hh,"_sh:",sh,"_vh:",vh)
